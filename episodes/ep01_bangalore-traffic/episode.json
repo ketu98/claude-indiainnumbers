@@ -1,0 +1,32 @@
+{
+  "ep": 1,
+  "slug": "bangalore-traffic",
+  "topic": "Is Bangalore traffic really the worst in India?",
+  "hook": {"text": "Is Bangalore traffic really the worst in India?", "lines": ["Is Bangalore", "traffic really", "the worst", "in India?"]},
+  "welcome": true,
+  "lines": [
+    {"spk": "REGINALD", "say": "The data says... yes, I'm afraid. In the TomTom Traffic Index twenty twenty-five, Bengaluru is number one in India, and number two in the entire world.",
+     "cap": "The data says... YES, I'm afraid. TomTom Traffic Index 2025: Bengaluru is #1 in India, and #2 in the entire WORLD.",
+     "visual": {"type": "bars", "title": "Traffic congestion · 2025", "subtitle": "Source: TomTom Traffic Index", "unit": "%", "decimals": 1,
+                "items": [["Bengaluru", 74.4], ["Pune", 71.1], ["Mumbai", 63.2], ["New Delhi", 60.2], ["Kolkata", 58.9]], "highlight": 0,
+                "badges": [{"text": "#1 in India", "at": "India,"}, {"text": "#2 in the World", "at": "WORLD"}]}},
+    {"spk": "TARA", "say": "Thirty six minutes to drive ten kilometres! You could finish a whole web series episode in that time!",
+     "cap": "36 minutes to drive 10 km! You could finish a whole web series episode in that time!",
+     "visual": {"type": "gauge", "title": "10 km drive", "value": 36.15, "max": 60, "format": "mm:ss", "unit_label": "minutes",
+                "sub": {"text": "Evening rush: 45 min 27 sec", "at": "episode"}}},
+    {"spk": "VEDA", "say": "But look on the bright side. That's one hundred and sixty eight hours a year in rush hour. Seven full days of free music time.",
+     "cap": "But look on the bright side. That's 168 hours a year in rush hour. 7 FULL DAYS of free music time.",
+     "visual": {"type": "bigstat", "value": 168, "label": "hours a year, stuck in rush hour", "count_at": "168",
+                "then": {"text": "= 7 full days", "at": "FULL"}, "tiles": {"n": 7, "label": "DAY", "icon": "note", "at": "FULL"}}},
+    {"spk": "REGINALD", "say": "And Pune, do hold the celebrations, old chap. You're only three points behind.",
+     "cap": "And Pune, do hold the celebrations, old chap. You're only 3 points behind.",
+     "visual": {"type": "vs", "title": "Bengaluru vs Pune", "subtitle": "congestion level, 2025", "a": ["Bengaluru", 74.4], "b": ["Pune", 71.1],
+                "unit": "%", "decimals": 1, "pill": {"text": "only 3.3 points apart!", "at": "3"}, "boing": true}},
+    {"spk": "TARA", "say": "So, what's your city's number? Tell us in the comments!", "cap": "So, what's your city's number? Tell us in the comments!",
+     "visual": {"type": "cta", "title": "Your city?", "chips": ["Pune", "Mumbai", "Delhi", "Kolkata", "Chennai", "Hyderabad", "Jaipur", "Ahmedabad"]}}
+  ],
+  "title": "Is Bangalore traffic REALLY the worst in India? 🚗",
+  "description": "Bengaluru vs Pune vs Mumbai vs Delhi vs Kolkata — the panel checks the data. Bengaluru is #1 in India and #2 in the world for traffic congestion. What's your city's number? Tell us in the comments!",
+  "hashtags": ["#Bangalore", "#Bengaluru", "#Traffic", "#IndiaInNumbers", "#Shorts"],
+  "sources": [{"name": "TomTom Traffic Index 2025", "url": "https://www.tomtom.com/traffic-index/bengaluru-traffic"}]
+}

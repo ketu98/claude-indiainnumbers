@@ -1,0 +1,143 @@
+{
+ "ep": 2,
+ "slug": "upi-every-second",
+ "topic": "How many UPI payments happen in India every second?",
+ "hook": {
+  "text": "How many UPI payments happen in India every second?"
+ },
+ "welcome": true,
+ "lines": [
+  {
+   "spk": "TARA",
+   "say": "In October twenty twenty-six, India made twenty five point four seven billion UPI payments. A brand new record!",
+   "cap": "October 2026: 25.47 BILLION UPI payments. A brand new record!",
+   "visual": {
+    "type": "bars",
+    "title": "UPI payments per month",
+    "subtitle": "Source: NPCI, 2026",
+    "unit": " bn",
+    "decimals": 2,
+    "items": [
+     [
+      "May",
+      23.2
+     ],
+     [
+      "July",
+      23.66
+     ],
+     [
+      "August",
+      24.51
+     ],
+     [
+      "September",
+      24.07
+     ],
+     [
+      "October",
+      25.47
+     ]
+    ],
+    "highlight": 4,
+    "badges": [
+     {
+      "text": "All-time high",
+      "at": "record"
+     }
+    ]
+   }
+  },
+  {
+   "spk": "VEDA",
+   "say": "Divide that by every second of the month, and you get about nine and a half thousand payments. Every. Single. Second.",
+   "cap": "Divide by every second of the month: about 9,500 payments. Every. Single. Second.",
+   "visual": {
+    "type": "bigstat",
+    "value": 9514,
+    "label": "UPI payments every second (Oct 2026 average)",
+    "count_at": "9,500",
+    "then": {
+     "text": "≈ 82 crore a day",
+     "at": "Every."
+    }
+   }
+  },
+  {
+   "spk": "REGINALD",
+   "say": "And the money, old chap? Over one lakh crore rupees. Per day. My monocle is rather fogged.",
+   "cap": "And the money, old chap? Over ₹1 LAKH CRORE. Per DAY. My monocle is rather fogged.",
+   "visual": {
+    "type": "fact",
+    "kicker": "Average UPI value, every day (Oct 2026)",
+    "big": "₹1,01,707 cr",
+    "lines": [
+     {
+      "text": "First time above ₹1 lakh crore a day",
+      "at": "DAY."
+     }
+    ],
+    "boing": true
+   }
+  },
+  {
+   "spk": "TARA",
+   "say": "Four years ago, in October twenty twenty-two, it was just seven point three billion a month. Now it's three and a half times bigger!",
+   "cap": "October 2022: just 7.3 billion a month. Now? 3.5x BIGGER!",
+   "visual": {
+    "type": "vs",
+    "title": "UPI payments in October",
+    "subtitle": "billions per month",
+    "a": [
+     "Oct 2022",
+     7.3
+    ],
+    "b": [
+     "Oct 2026",
+     25.47
+    ],
+    "unit": " bn",
+    "decimals": 1,
+    "pill": {
+     "text": "3.5x in 4 years",
+     "at": "3.5x"
+    },
+    "highlight": "b"
+   }
+  },
+  {
+   "spk": "VEDA",
+   "say": "Which app do you pay with? Tell us in the comments!",
+   "cap": "Which app do you pay with? Tell us in the comments!",
+   "visual": {
+    "type": "cta",
+    "title": "Your UPI app?",
+    "chips": [
+     "PhonePe",
+     "Google Pay",
+     "Paytm",
+     "BHIM",
+     "Cash only"
+    ]
+   }
+  }
+ ],
+ "title": "India makes 9,500 UPI payments EVERY SECOND 🤯",
+ "description": "25.47 billion UPI payments in October 2026, a new record. That's about 9,500 every second and over ₹1 lakh crore a day. The panel crunches the numbers. Which UPI app do you use? Tell us in the comments!",
+ "hashtags": [
+  "#UPI",
+  "#DigitalIndia",
+  "#IndiaInNumbers",
+  "#Shorts"
+ ],
+ "sources": [
+  {
+   "name": "NPCI data via Entrepreneur India (Nov 2026)",
+   "url": "https://india.entrepreneur.com/business-news/upi-hits-record-25-47-bn-transactions-in-october-daily-value-crosses-inr-1-l-cr"
+  },
+  {
+   "name": "Business Standard (Oct 2022 UPI volume)",
+   "url": "https://business-standard.com/article/finance/upi-processes-over-7-bn-transactions-in-oct-record-high-since-inception-122110100569_1.html"
+  }
+ ]
+}

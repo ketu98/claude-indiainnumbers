@@ -1,0 +1,131 @@
+{
+ "ep": 3,
+ "slug": "railways-every-day",
+ "topic": "How many people ride Indian Railways every day?",
+ "hook": {
+  "text": "How many people ride Indian Railways every day?"
+ },
+ "welcome": true,
+ "lines": [
+  {
+   "spk": "VEDA",
+   "say": "Last financial year, Indian Railways carried seven hundred and forty one crore passengers. That's about two crore people, every single day.",
+   "cap": "FY 2025-26: 741 CRORE passengers. That's about 2 crore people, every single day.",
+   "visual": {
+    "type": "bigstat",
+    "value": 741,
+    "suffix": " crore",
+    "label": "passengers in FY 2025-26",
+    "count_at": "741",
+    "then": {
+     "text": "≈ 2 crore every day",
+     "at": "2"
+    }
+   }
+  },
+  {
+   "spk": "TARA",
+   "say": "And the shiny Vande Bharat trains? Three point nine eight crore passengers, up thirty four percent in one year!",
+   "cap": "And Vande Bharat? 3.98 CRORE passengers. Up 34% in one year!",
+   "visual": {
+    "type": "vs",
+    "title": "Vande Bharat passengers",
+    "subtitle": "crore per year",
+    "a": [
+     "FY 2024-25",
+     2.97
+    ],
+    "b": [
+     "FY 2025-26",
+     3.98
+    ],
+    "unit": " cr",
+    "decimals": 2,
+    "pill": {
+     "text": "+34% in one year",
+     "at": "34%"
+    },
+    "highlight": "b"
+   }
+  },
+  {
+   "spk": "REGINALD",
+   "say": "Not everyone gets on, mind you. Three point three nine crore passengers couldn't travel, because their waitlisted tickets never got confirmed.",
+   "cap": "Not everyone gets on, mind you. 3.39 CRORE passengers couldn't travel. Waitlisted tickets, never confirmed.",
+   "visual": {
+    "type": "bars",
+    "title": "Waitlisted, never confirmed",
+    "subtitle": "passengers who couldn't travel (crore) · RTI data",
+    "unit": " cr",
+    "decimals": 2,
+    "items": [
+     [
+      "FY 2021-22",
+      1.65
+     ],
+     [
+      "FY 2022-23",
+      2.72
+     ],
+     [
+      "FY 2023-24",
+      2.96
+     ],
+     [
+      "FY 2024-25",
+      3.27
+     ],
+     [
+      "FY 2025-26",
+      3.39
+     ]
+    ],
+    "highlight": 4,
+    "badges": [
+     {
+      "text": "≈ 92,877 a day",
+      "at": "Waitlisted"
+     }
+    ],
+    "boing": true
+   }
+  },
+  {
+   "spk": "TARA",
+   "say": "What's your worst train ticket story? Tell us in the comments!",
+   "cap": "What's your worst train ticket story? Tell us in the comments!",
+   "visual": {
+    "type": "cta",
+    "title": "Your train story?",
+    "chips": [
+     "Tatkal fail",
+     "RAC forever",
+     "Waitlist 200+",
+     "Confirmed!"
+    ]
+   }
+  }
+ ],
+ "title": "2 CRORE Indians ride the train EVERY DAY 🚆",
+ "description": "Indian Railways carried 741 crore passengers in FY 2025-26: about 2 crore a day. Vande Bharat grew 34%, and 3.39 crore people couldn't travel on waitlisted tickets. What's your worst train ticket story?",
+ "hashtags": [
+  "#IndianRailways",
+  "#VandeBharat",
+  "#IndiaInNumbers",
+  "#Shorts"
+ ],
+ "sources": [
+  {
+   "name": "Railway Ministry via ThePrint (Apr 2026)",
+   "url": "https://theprint.in/india/record-1670-million-tonnes-cargo-741-cr-passengers-transported-in-2025-26-railway-ministry/2894368"
+  },
+  {
+   "name": "News On AIR — Vande Bharat FY26",
+   "url": "https://newsonair.gov.in/nearly-3-98-crore-passengers-travelled-through-vande-bharat-express-trains-in-2025-26-marking-remarkable-surge-in-passenger-patronage-on-network/"
+  },
+  {
+   "name": "The Pioneer — waitlist RTI data",
+   "url": "https://dailypioneer.com/india/indias-rail-waitlist-crisis-over-3-crore-passengers-missed-train-travel-in-20252026"
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+INDIA IN NUMBERS — YouTube channel setup
+
+CHANNEL NAME
+India in Numbers
+
+HANDLE (try in this order)
+@IndiaInNumbers
+@IndiaInNumbersPanel
+@TheNumbersPanel
+
+DESCRIPTION
+Is Bangalore traffic really the worst in India? Which city spends the most on rent? How does India stack up against the world?
+
+Veda, Reginald and Tara take your questions about life in India and settle them with real data — charts, sources, and a fair bit of arguing.
+
+New Shorts every week. Got a question for the panel? Drop it in the comments and it might be the next episode.
+
+Every number is sourced — check each video's description.
+
+KEYWORDS (Settings > Channel > Basic info > Keywords)
+India in Numbers, India facts, India data, Indian cities, Bangalore, Bengaluru, Mumbai, Delhi, India vs world, data explained, did you know India, Shorts
+
+ASSETS
+Profile picture: profile_picture_800.png
+Banner: banner_2560x1440.png
+
+SETTINGS CHECKLIST
+1. Create the channel with a custom name ("India in Numbers"), not your personal name.
+   YouTube may suggest making it under a Brand Account — that's fine and lets you add helpers later.
+2. Verify your phone number (youtube.com/verify) — unlocks custom thumbnails and longer videos.
+3. Settings > Channel > Basic info: country = India.
+4. Settings > Channel > Advanced settings: audience = "No, this channel is not made for kids".
+5. Settings > Upload defaults:
+   - Category: Education (or Entertainment)
+   - Video language: English
+   - Description template: "Source: <link>" line at the bottom, so you never forget it
+   - Tags: India in Numbers, India facts, India data
+6. AI/altered-content question on each upload: the characters are animated and clearly not real,
+   so it normally isn't required — answer it honestly per video.
+7. Customization > Layout: set Ep 01 as the channel trailer once it's uploaded.
+8. Later: link Instagram in Customization > Basic info > Links, and cross-post each Short as a Reel.
+
+EP 01 UPLOAD
+File: india_in_numbers_ep01 (narrator or VEDA version)
+Title: Is Bangalore traffic REALLY the worst in India? 🚗
+Description:
+Bengaluru vs Pune vs Mumbai vs Delhi vs Kolkata — the panel checks the data.
+Bengaluru is #1 in India and #2 in the world for traffic congestion (TomTom Traffic Index 2025).
+What's your city's number? Tell us in the comments!
+
+Source: TomTom Traffic Index 2025 — https://www.tomtom.com/traffic-index/bengaluru-traffic
+#Bangalore #Bengaluru #Traffic #IndiaInNumbers #Shorts
