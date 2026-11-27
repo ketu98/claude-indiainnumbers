@@ -28,10 +28,13 @@ YouTube refuses to pay channels whose videos look template-made with little vari
    - `bash setup.sh`, then run the `export IIN_FONTS=...` line it prints.
    - **Voice bank** (private): attach `ketu98/iin-voice-bank` with the add_repo tool (access "push") and clone it to `~/iin-voice-bank`
      (`git clone --depth 1 https://github.com/ketu98/iin-voice-bank ~/iin-voice-bank`), then `export IIN_VOICE_BANK=~/iin-voice-bank`.
-     - If `~/iin-voice-bank/inbox/` has new recordings: `python3 engine/voice_bank.py inbox`. If it says a recording didn't split
-       cleanly, tell the owner exactly which section and why (from its message). Then commit and push the bank repo:
-       `cd ~/iin-voice-bank && git add -A && git commit -m "Process recordings" && git push`.
-     - `python3 engine/voice_bank.py status` shows which clips exist.
+     - If `~/iin-voice-bank/inbox/` has new recordings: `python3 engine/voice_bank.py inbox`. It matches each file to its script by name
+       (`Script_01.m4a` …), cuts it into clips and renames the finished script in `sigma-scripts/` to `Completed_…`. For every `PROBLEM:`
+       line, tell the owner exactly which recording and what to redo. Then commit and push both repos:
+       `cd ~/iin-voice-bank && git add -A && git commit -m "Process recordings" && git push`, and in this repo
+       `git add -A sigma-scripts && git commit -m "SIGMA: recordings processed" && git push`.
+     - `python3 engine/voice_bank.py status` shows which clips exist. New recording batches: add a section `Script_NN` (new ids) to
+       `channel/sigma_script.json` and run `python3 engine/voice_bank.py scripts` to write its file into `sigma-scripts/`.
      - If the bank repo can't be attached or is empty, carry on without SIGMA (VEDA asks the hook, no Last Word) and mention it in your message.
      - Clips are private: never copy them into this repo, never send them anywhere.
 
@@ -42,7 +45,7 @@ YouTube refuses to pay channels whose videos look template-made with little vari
      if a number they gave can't be verified, use the verified figure and say so in your message). Then comment on the idea Issue with the
      episode Issue link and close it.
    - Then `topics/requests.md`: if the owner left a request, do the top one and delete it from the list.
-   - Otherwise **prefer a recorded SIGMA question** (`channel/sigma_script.json` sections A/B, kind `question`) that has a clip in the bank and
+   - Otherwise **prefer a recorded SIGMA question** (`channel/sigma_script.json` Script_01 / Script_02, kind `question`) that has a clip in the bank and
      isn't in the `Q` column of `episodes/LOG.md`. The question is the hook, word for word.
    - Else pick from `topics/backlog.md`, or a timely angle (fresh official data this week).
    - Never repeat a topic in `episodes/LOG.md`, and don't use the same category as either of the last 2 episodes.
