@@ -1,13 +1,21 @@
-# India in Numbers: keep a synced copy of the channel repo on your Desktop (Windows).
-# Run once:  right-click this file > "Run with PowerShell"   (or: powershell -ExecutionPolicy Bypass -File windows-setup.ps1)
+# India in Numbers: keep a synced copy of the channel repo on your computer (Windows).
+# Run once:  powershell -ExecutionPolicy Bypass -File windows-setup.ps1 [-Dest 'D:\India in Numbers']
+# Default folder: D:\India in Numbers (falls back to the Desktop if there is no D: drive).
+# Run it again with another -Dest to move the synced copy; the background task then follows the new folder.
 # After that it syncs at every log-in and every 30 minutes whenever you are online. Nothing else to do.
 #
-# The Desktop folder is a MIRROR of GitHub: anything you change inside it is overwritten on the next sync.
+# The synced folder is a MIRROR of GitHub: anything you change inside it is overwritten on the next sync.
 # Copy a video somewhere else before editing it.
 
+param([string]$Dest = '')
 $ErrorActionPreference = 'Stop'
 $Repo   = 'https://github.com/ketu98/claude-indiainnumbers.git'
-$Dest   = Join-Path ([Environment]::GetFolderPath('Desktop')) 'India in Numbers'
+if (-not $Dest) {
+    if (Test-Path 'D:\') { $Dest = 'D:\India in Numbers' }
+    else { $Dest = Join-Path ([Environment]::GetFolderPath('Desktop')) 'India in Numbers' }
+}
+$parent = Split-Path -Parent $Dest
+if (-not (Test-Path -LiteralPath $parent)) { throw "The drive or folder '$parent' does not exist. Pick another -Dest." }
 $Home2  = Join-Path $env:LOCALAPPDATA 'IndiaInNumbers'
 $Sync   = Join-Path $Home2 'sync.ps1'
 $Log    = Join-Path $Home2 'sync.log'
