@@ -18,7 +18,7 @@ Late or skipped a week? No problem: those days simply run with VEDA asking the q
 2. Open the script and read the lines **in order**. After each line, **pause about 2 seconds**. Don't read the numbers or the grey notes.
 3. Fluffed a line? Delete the recording and start again. It's only a minute or two.
 4. Delivery: calm, a little mysterious, like someone who already knows the answer. Questions sound curious; reactions are short and dry.
-5. **Name the file after the script**: `Script_01.m4a`, `Script_02.m4a`, ...
+5. File name doesn't matter: it is matched to the right script automatically (by the number of lines).
 
 ## How to send
 - **In a Claude chat**: attach the files. Claude cuts them into clips and stores them.

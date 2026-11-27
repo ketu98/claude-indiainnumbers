@@ -155,11 +155,19 @@ def inbox(bank):
         parent = os.path.basename(os.path.dirname(rec))
         key = section_of(parent) if parent != 'inbox' else None
         key = key or section_of(rec)
-        if not key:
-            problems.append(f'{os.path.basename(rec)}: name it after its script (Script_01 ... Script_{len(SCRIPT):02d})'); continue
-        print(f'{rec} -> {key}:')
-        try: split(rec, key, bank)
-        except SystemExit as e: problems.append(f'{os.path.basename(rec)} ({key}): {e}'); continue
+        if key:
+            print(f'{rec} -> {key}:')
+            try: split(rec, key, bank)
+            except SystemExit as e: problems.append(f'{os.path.basename(rec)} ({key}): {e}'); continue
+        else:   # any file name: try the scripts not recorded yet, oldest first; the line count must match exactly
+            bj = os.path.join(bank, 'bank.json'); B = json.load(open(bj, encoding='utf-8')) if os.path.exists(bj) else {}
+            pending = [k for k, sec in SCRIPT.items() if any(line_parts(l)[0] not in B for l in sec['lines'])]
+            for k in pending:
+                try: print(f'{rec} -> trying {k}:'); split(rec, k, bank); key = k; break
+                except SystemExit: continue
+            if not key:
+                problems.append(f'{os.path.basename(rec)}: its lines did not match any unrecorded script ({", ".join(pending) or "none pending"}). '
+                                'Check that every line was read once, with a clear pause between lines.'); continue
         dst = os.path.join(bank, 'raw', key); os.makedirs(dst, exist_ok=True); shutil.move(rec, os.path.join(dst, os.path.basename(rec)))
         done += 1
     print(f'inbox: {done} recording(s) processed')
