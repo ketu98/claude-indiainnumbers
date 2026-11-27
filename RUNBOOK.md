@@ -13,7 +13,10 @@ Never call them AIs on screen or in the script, and never claim they are real pe
 
 ## Steps
 
-1. **Setup**: `bash setup.sh`, then run the `export IIN_FONTS=...` line it prints.
+1. **Setup**: clone without the big `videos/` folder (it is only for Aniket's computer):
+   `git clone --depth 1 --filter=blob:none --sparse https://github.com/ketu98/claude-indiainnumbers ~/claude-indiainnumbers && cd ~/claude-indiainnumbers && git sparse-checkout set --no-cone '/*' '!/videos/'`
+   Then set a git identity (`git config user.name "India in Numbers bot"`, `git config user.email "aniket+claude@users.noreply.github.com"`),
+   run `bash setup.sh`, and run the `export IIN_FONTS=...` line it prints.
 
 2. **Pick the topic**
    - Read `topics/requests.md` first: if Aniket left a request there, do the top one and delete it from the list.
@@ -53,23 +56,19 @@ Never call them AIs on screen or in the script, and never claim they are real pe
    - SendUserMessage, short: the topic, the 3 key numbers with their sources, and
      "Want your voice on the opening question? Record: '<hook text>' and send it here, and I'll redo the video."
 
-8. **Log it in the Episode Tracker sheet** (Claude Docs connector; Sheet id `e594af4b-4f59-41d0-aa7c-3755099280bd`,
-   link https://claude.ai/artifact/VMH7G519GZtzyErD87GPqn).
-   - First call the connector's `guide` with `items: ["topic.sheets"]` and follow it. Find the workbook node with
-     `read(ref={"object":"project","id":"e594af4b-4f59-41d0-aa7c-3755099280bd"})`, then `readSheets` and `readCells` on sheet `Episodes`
-     to find the first empty row of the table (columns A:K, header in row 1).
-   - Write ONE new row there (never overwrite a filled row) with these columns:
-     `Ep` (number) · `Made on (IST)` ("YYYY-MM-DD HH:MM") · `Slot` ("Morning" or "Afternoon") · `Topic` · `Status` = "Ready to review" ·
-     `Title` · `Voice` ("VEDA" or "Narrator") · `Video file` (the mp4 file name) · `Sources` (publisher names, "; "-separated) ·
-     `YouTube link` (leave empty) · `Notes` (anything Aniket should check, or empty).
-   - If a re-render with Aniket's voice happens later (step 10), update that row's `Voice` and `Video file` only.
-   - If the connector is unavailable, skip this step and mention it in your message to Aniket.
+8. **Publish to GitHub for review** (this also commits and pushes everything):
+   - Copy the `*_upload.txt` from `out/` next to `episode.json` as `upload.txt`, and append a line to `episodes/LOG.md`:
+     `| NN | YYYY-MM-DD | <category> | <topic> | <title> |`.
+   - `git add episodes topics && git commit -m "Ep NN: <topic> (script)"` (skip if nothing changed).
+   - `python3 engine/publish_github.py episodes/<folder> --slot <Morning|Afternoon>`
+     It copies the video and upload text into `videos/YYYY-MM/` (date-time names), opens the episode's review Issue labelled
+     `episode` + `ready-to-review` with a checklist, regenerates `TRACKER.md` / `TRACKER.csv` (status comes from Issue labels),
+     then commits and pushes to main. Put the Issue link it prints in your message to Aniket.
+   - If it fails, fix the cause and re-run it: it is safe to repeat (one Issue per episode).
 
-9. **Save to GitHub**
-   - Copy the `*_upload.txt` from `out/` next to `episode.json` as `upload.txt`. Append a line to `episodes/LOG.md`: `| NN | YYYY-MM-DD | <category> | <topic> | <title> |`.
-   - `git add episodes topics && git commit -m "Ep NN: <topic>"`, then `git -c push.negotiate=true push origin HEAD:main`.
-   - If the push is rejected because the remote moved on, run `git pull --rebase origin main` and push again.
-   - Never commit audio or video (`.gitignore` handles it).
+9. **Tracker refresh**: nothing extra. `TRACKER.md` is rebuilt on every publish, so Aniket's label changes on older episodes
+   show up there too.
 
-10. **If Aniket replies with a recording**: save it as `episodes/<folder>/hook.<ext>`, re-render (step 6 picks it up
-   automatically and cleans the audio), and send the new mp4.
+10. **If Aniket replies with a recording**: save it as `episodes/<folder>/hook.<ext>` (never commit it), re-render (step 6 picks it up
+   automatically and cleans the audio), send the new mp4, then re-run step 8's `publish_github.py`: it updates the same Issue
+   and adds the `narrator-voice` label.

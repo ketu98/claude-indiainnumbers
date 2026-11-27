@@ -92,7 +92,7 @@ Labels: `ready-to-review` → `uploaded` (or `needs-fix` / `skipped`). TRACKER.m
     subprocess.run([sys.executable, os.path.join(ROOT, 'engine', 'build_tracker.py')], check=True)
 
     # ---- commit + push (retry once on a moved remote)
-    git('add', '-f', *rel_paths, os.path.relpath(epj, ROOT), 'TRACKER.md', 'TRACKER.csv')
+    git('add', '--sparse', '-f', *rel_paths, os.path.relpath(epj, ROOT), 'TRACKER.md', 'TRACKER.csv')
     if os.path.exists(os.path.join(ep_dir, 'upload.txt')): git('add', os.path.relpath(os.path.join(ep_dir, 'upload.txt'), ROOT))
     if git('diff', '--cached', '--quiet', check=False).returncode != 0:
         git('commit', '-m', f"Ep {n:02d}: {EP.get('topic', '')} ({stamp})")
