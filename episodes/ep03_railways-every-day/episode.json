@@ -127,5 +127,14 @@
    "name": "The Pioneer — waitlist RTI data",
    "url": "https://dailypioneer.com/india/indias-rail-waitlist-crisis-over-3-crore-passengers-missed-train-travel-in-20252026"
   }
- ]
+ ],
+ "github": {
+  "issue": 4,
+  "video": "https://github.com/ketu98/claude-indiainnumbers/blob/main/videos/2026-11/2026-11-27_13-48_ep03_railways-every-day_veda.mp4",
+  "video_file": "2026-11-27_13-48_ep03_railways-every-day_veda.mp4",
+  "path": "videos/2026-11/2026-11-27_13-48_ep03_railways-every-day_veda.mp4",
+  "made": "2026-11-27 13:48",
+  "slot": "Manual",
+  "voice": "VEDA"
+ }
 }
