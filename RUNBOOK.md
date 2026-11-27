@@ -46,16 +46,30 @@ Never call them AIs on screen or in the script, and never claim they are real pe
 6. **Render**: `python3 engine/make_episode.py episodes/<folder>` (VEDA asks the hook, since no recording exists yet).
 
 7. **Deliver to Aniket** (he may be away, so use status "proactive"):
-   - SendUserFile: the mp4 from `out/`, caption "Ep NN: <title>".
-   - SendUserFile: `out/upload.txt` (title, description, sources, hashtags, hook line).
+   Output files are named with the IST date and time they were made, e.g. `2026-11-28_08-52_ep04_chai-vs-coffee_veda.mp4`
+   and `2026-11-28_08-52_ep04_chai-vs-coffee_upload.txt`. Keep those names.
+   - SendUserFile: the mp4 from `out/`, caption "Ep NN · <date, time IST> · <title>".
+   - SendUserFile: the `*_upload.txt` from `out/` (title, description, sources, hashtags, hook line).
    - SendUserMessage, short: the topic, the 3 key numbers with their sources, and
      "Want your voice on the opening question? Record: '<hook text>' and send it here, and I'll redo the video."
 
-8. **Save to GitHub**
-   - Copy `out/upload.txt` next to `episode.json`. Append a line to `episodes/LOG.md`: `| NN | YYYY-MM-DD | <category> | <topic> | <title> |`.
+8. **Log it in the Episode Tracker sheet** (Claude Docs connector; Sheet id `e594af4b-4f59-41d0-aa7c-3755099280bd`,
+   link https://claude.ai/artifact/VMH7G519GZtzyErD87GPqn).
+   - First call the connector's `guide` with `items: ["topic.sheets"]` and follow it. Find the workbook node with
+     `read(ref={"object":"project","id":"e594af4b-4f59-41d0-aa7c-3755099280bd"})`, then `readSheets` and `readCells` on sheet `Episodes`
+     to find the first empty row of the table (columns A:K, header in row 1).
+   - Write ONE new row there (never overwrite a filled row) with these columns:
+     `Ep` (number) · `Made on (IST)` ("YYYY-MM-DD HH:MM") · `Slot` ("Morning" or "Afternoon") · `Topic` · `Status` = "Ready to review" ·
+     `Title` · `Voice` ("VEDA" or "Narrator") · `Video file` (the mp4 file name) · `Sources` (publisher names, "; "-separated) ·
+     `YouTube link` (leave empty) · `Notes` (anything Aniket should check, or empty).
+   - If a re-render with Aniket's voice happens later (step 10), update that row's `Voice` and `Video file` only.
+   - If the connector is unavailable, skip this step and mention it in your message to Aniket.
+
+9. **Save to GitHub**
+   - Copy the `*_upload.txt` from `out/` next to `episode.json` as `upload.txt`. Append a line to `episodes/LOG.md`: `| NN | YYYY-MM-DD | <category> | <topic> | <title> |`.
    - `git add episodes topics && git commit -m "Ep NN: <topic>"`, then `git -c push.negotiate=true push origin HEAD:main`.
    - If the push is rejected because the remote moved on, run `git pull --rebase origin main` and push again.
    - Never commit audio or video (`.gitignore` handles it).
 
-9. **If Aniket replies with a recording**: save it as `episodes/<folder>/hook.<ext>`, re-render (step 6 picks it up
+10. **If Aniket replies with a recording**: save it as `episodes/<folder>/hook.<ext>`, re-render (step 6 picks it up
    automatically and cleans the audio), and send the new mp4.

@@ -2,7 +2,7 @@
 
 usage: python3 engine/make_episode.py episodes/<ep-folder> [--preview 2,9,15]
 Folder must contain episode.json. Optional: hook.(mp3|m4a|wav|ogg|aac) = narrator recording.
-Writes <folder>/out/<name>.mp4 and <folder>/out/upload.txt
+Writes <folder>/out/<YYYY-MM-DD_HH-MM>_<epNN_slug>_<veda|narrator>.mp4 and ..._upload.txt (IST time)
 """
 import json, math, os, subprocess, sys, glob, hashlib
 import numpy as np, soundfile as sf
@@ -613,7 +613,12 @@ def frame(i):
 def slug():
     return f"ep{int(EP.get('ep', 1)):02d}_{EP.get('slug', 'episode')}"
 
-def write_upload_txt():
+def stamp_now():
+    import datetime
+    ist = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+    return datetime.datetime.now(ist).strftime('%Y-%m-%d_%H-%M')
+
+def write_upload_txt(stamp):
     tags = ' '.join(EP.get('hashtags', []))
     src = '\n'.join(f"Source: {s['name']} — {s['url']}" for s in EP.get('sources', []))
     txt = f"""TITLE
@@ -628,7 +633,8 @@ DESCRIPTION
 HOOK LINE (for your recording)
 "{EP['hook']['text']}"
 """
-    open(os.path.join(EP_DIR, 'out', 'upload.txt'), 'w').write(txt)
+    for f in glob.glob(os.path.join(EP_DIR, 'out', '*_upload.txt')): os.remove(f)
+    open(os.path.join(EP_DIR, 'out', f"{stamp}_{slug()}_upload.txt"), 'w').write(txt)
 
 def main():
     global BG
@@ -648,10 +654,10 @@ def main():
     for i in range(NF):
         p.stdin.write(frame(i).tobytes())
     p.stdin.close(); p.wait(); assert p.returncode == 0
-    name = f"{slug()}_{HOOK_MODE}.mp4"; out = os.path.join(EP_DIR, 'out', name); tmp = out[:-4] + '.tmp.mp4'
+    stamp = stamp_now(); name = f"{stamp}_{slug()}_{HOOK_MODE}.mp4"; out = os.path.join(EP_DIR, 'out', name); tmp = out[:-4] + '.tmp.mp4'
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', vid, '-i', wpath('mix.wav'), '-map', '0:v', '-map', '1:a', '-c:v', 'copy',
                     '-c:a', 'aac', '-b:a', '160k', '-ar', '48000', '-shortest', tmp], check=True)
-    os.replace(tmp, out); write_upload_txt()
+    os.replace(tmp, out); write_upload_txt(stamp)
     print('DONE', out, round(T_END, 1), 's')
 
 if __name__ == '__main__':
