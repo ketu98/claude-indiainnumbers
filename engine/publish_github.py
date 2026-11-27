@@ -32,21 +32,26 @@ def main():
     txts = sorted(glob.glob(os.path.join(ep_dir, 'out', '*_upload.txt')), key=os.path.getmtime)
     if not vids: raise SystemExit('no mp4 in out/ — render first')
     vid, txt = vids[-1], (txts[-1] if txts else None)
+    extra = [x for x in (sorted(glob.glob(os.path.join(ep_dir, 'out', '*_chapters.json')), key=os.path.getmtime)[-1:] +
+                         sorted(glob.glob(os.path.join(ep_dir, 'out', '*_thumb.jpg')), key=os.path.getmtime)[-1:])]
     vname = os.path.basename(vid); stamp = vname[:16]
     when = datetime.datetime.strptime(stamp, '%Y-%m-%d_%H-%M'); nice = when.strftime('%d %b %Y, %I:%M %p IST')
-    voice = 'Narrator' if vname.endswith('_narrator.mp4') else 'VEDA'
+    voice = 'SIGMA' if vname.endswith(('_sigma.mp4', '_narrator.mp4')) else 'VEDA'
+    kind = 'long' if EP.get('kind') == 'long' or EP.get('chapters') else 'short'
 
     # ---- files into videos/YYYY-MM/
     month_dir = os.path.join(ROOT, 'videos', when.strftime('%Y-%m')); os.makedirs(month_dir, exist_ok=True)
     rel_paths = []
-    for p in (vid, txt):
+    for p in (vid, txt, *extra):
         if p:
             shutil.copy2(p, os.path.join(month_dir, os.path.basename(p)))
             rel_paths.append(os.path.relpath(os.path.join(month_dir, os.path.basename(p)), ROOT))
     vrel = rel_paths[0]
     vurl = f"https://github.com/{REPO}/blob/main/{urllib.parse.quote(vrel)}"
     vraw = f"https://github.com/{REPO}/raw/main/{urllib.parse.quote(vrel)}"
-    turl = f"https://github.com/{REPO}/blob/main/{urllib.parse.quote(rel_paths[1])}" if len(rel_paths) > 1 else ''
+    turl = f"https://github.com/{REPO}/blob/main/{urllib.parse.quote(rel_paths[1])}" if txt else ''
+    chap_rel = next((r for r in rel_paths if r.endswith('_chapters.json')), None)
+    thumb_rel = next((r for r in rel_paths if r.endswith('_thumb.jpg')), None)
 
     # ---- issue (one per episode)
     title = f"Ep {n:02d} · {nice} · {EP.get('title', EP.get('topic', ''))}"
@@ -55,7 +60,7 @@ def main():
     ibody = f"""### 🎬 {vname}
 [▶ Open video]({vurl}) · [⬇ Download]({vraw}){f' · [📝 Upload text]({turl})' if turl else ''}
 
-**{EP.get('topic', '')}** · made {nice} · {slot} slot · hook voice: {voice}
+**{EP.get('topic', '')}** · {'🎞 LONG-FORM (16:9)' if kind == 'long' else '📱 Short'} · format: {EP.get('format', 'classic')} · made {nice} · {slot} slot · hook voice: {voice}
 
 **YouTube title:** {EP.get('title', '')}
 
@@ -80,7 +85,7 @@ Labels: `ready-to-review` → `scheduled` → `uploaded` (or `needs-fix` / `skip
     issue_no = EP.get('github', {}).get('issue')
     if issue_no:
         gh('-X', 'PATCH', f'{R}/issues/{issue_no}', '-f', f'title={title}', '-f', f'body={ibody}')
-        if voice == 'Narrator': gh('-X', 'POST', f'{R}/issues/{issue_no}/labels', '-f', 'labels[]=narrator-voice')
+        if voice == 'SIGMA': gh('-X', 'POST', f'{R}/issues/{issue_no}/labels', '-f', 'labels[]=narrator-voice')
         # a re-publish (fix or new voice) puts the episode back in the YouTube queue, unless it is already live
         if not EP.get('upload', {}).get('published'):
             for l in ('needs-fix', 'skipped', 'upload-failed'): gh('-X', 'DELETE', f'{R}/issues/{issue_no}/labels/{l}', check=False)
@@ -91,10 +96,13 @@ Labels: `ready-to-review` → `scheduled` → `uploaded` (or `needs-fix` / `skip
                 EP['upload'] = {'replaced': (up.get('replaced') or []) + [up['video_id']]}
     else:
         args = ['-X', 'POST', f'{R}/issues', '-f', f'title={title}', '-f', f'body={ibody}']
-        for l in ['episode', 'ready-to-review'] + (['narrator-voice'] if voice == 'Narrator' else []): args += ['-f', f'labels[]={l}']
+        for l in ['episode', 'ready-to-review'] + (['narrator-voice'] if voice == 'SIGMA' else []) + (['long-form'] if kind == 'long' else []):
+            args += ['-f', f'labels[]={l}']
         issue_no = gh(*args)['number']
     EP['github'] = {'issue': issue_no, 'video': vurl, 'video_file': vname, 'path': vrel,
-                    'made': when.strftime('%Y-%m-%d %H:%M'), 'slot': slot, 'voice': voice}
+                    'made': when.strftime('%Y-%m-%d %H:%M'), 'slot': slot, 'voice': voice, 'kind': kind}
+    if chap_rel: EP['github']['chapters'] = json.load(open(os.path.join(ROOT, chap_rel)))
+    if thumb_rel: EP['github']['thumb'] = thumb_rel
     json.dump(EP, open(epj, 'w'), ensure_ascii=False, indent=1)
 
     subprocess.run([sys.executable, os.path.join(ROOT, 'engine', 'build_tracker.py')], check=True)

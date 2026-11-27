@@ -1,6 +1,6 @@
 # 📊 Episode Tracker
 
-Auto-generated on every run (newest first). Status comes from each episode's Issue label, set by the YouTube uploader: `ready-to-review` (queued) → `scheduled` → `uploaded`. Label an issue `skipped` before it goes live to stop it.
+Auto-generated on every run (newest first). Status comes from each episode's Issue label, set by the YouTube uploader: `ready-to-review` (queued) → `scheduled` → `uploaded`. Label an issue `skipped` before it goes live to stop it. 🎞 = long-form.
 
 | Ep | Made (IST) | Status | Live (IST) | Title | Voice | Video | Issue | YouTube | Views 48h |
 |---:|---|---|---|---|---|---|---|---|---:|

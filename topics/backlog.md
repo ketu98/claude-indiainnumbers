@@ -50,3 +50,43 @@ Source hints are starting points; always verify the latest figures.
 - How many people watched the IPL final? (JioStar / BARC)
 - Which Indian language has the most speakers after Hindi? (Census language tables)
 - How many weddings happen in India in the wedding season? (CAIT estimates, labelled as estimates)
+
+## Nature & wildlife [nature]
+- How many tigers live in India? (NTCA All India Tiger Estimation)
+- How many elephants, rhinos and snow leopards does India have? (MoEFCC / WII population estimates)
+- How much of India is forest, and is it growing? (India State of Forest Report, FSI)
+- How many bird species live in India? (Zoological Survey of India / State of India's Birds)
+
+## Energy [energy]
+- How much of India's electricity comes from the sun and wind? (CEA / MNRE installed capacity and generation)
+- How much coal does India still burn for power? (CEA generation data)
+- How many EVs did India sell this year? (Vahan dashboard)
+
+## Sports [sports]
+- India's Olympic medals, all time (IOC / Olympedia)
+- How many people watched the last cricket World Cup final? (broadcaster / BARC figures)
+- How many Indians play chess at grandmaster level? (FIDE / AICF)
+
+## Tourism & heritage [tourism]
+- How many foreign tourists visit India in a year? (Ministry of Tourism, India Tourism Statistics)
+- Most visited monuments in India (ASI ticketed footfall)
+- How many UNESCO World Heritage Sites does India have, vs other countries? (UNESCO)
+
+## Education & work [education]
+- How many children go to school in India? (UDISE+)
+- How many engineers graduate every year? (AICTE)
+- How many Indians study abroad, and where? (MEA / ministry replies in Parliament)
+
+## Business & making things [business]
+- How many unicorn startups does India have? (DPIIT / reputable trackers, labelled)
+- What does India export the most? (Ministry of Commerce export data)
+- How many smartphones are made in India? (MeitY / ICEA)
+
+## Geography & everyday India [geography]
+- How long is India's coastline (it was just re-measured)? (Survey of India / MHA)
+- How many villages, towns and pin codes does India have? (Census, India Post)
+- How many passports does India issue a year? (MEA Passport Seva)
+
+## Weather [weather]
+- Which place in India gets the most rain? (IMD normals)
+- How much rain did this monsoon bring vs normal? (IMD end-of-season statement)

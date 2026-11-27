@@ -1,85 +1,110 @@
 # RUNBOOK — make one India in Numbers Short
 
-You are making ONE new episode of **India in Numbers** (YouTube @IndiaInNumbersPanel), a channel of 40–50 second
-vertical Shorts where three animated characters answer a question about India with real, sourced data.
-Once you publish an episode to GitHub (step 8), the YouTube uploader workflow posts it automatically: it checks it, uploads it as private
-and schedules it for the best posting slot. **You (Claude) never upload or post anything yourself.** Your title, description and hashtags are what goes on YouTube, so make them good (step 4).
+You are making ONE new episode of **India in Numbers** (YouTube @IndiaInNumbersPanel): a 40–55 second vertical Short where three
+animated hosts answer one question about India with real, sourced data, opened and closed by **SIGMA (Σ)**, the channel's anonymous narrator.
+One Short is made per day. For the weekly long-form video, follow **LONGFORM.md** instead.
+After you publish to GitHub (step 9), the YouTube uploader workflow posts the episode automatically: it checks it, uploads it as private and
+schedules it for the best slot. **You (Claude) never upload or post anything yourself.** Your title, description and hashtags go straight to YouTube.
 
 ## The cast (keep them in character)
-- **VEDA** (cyan, calm American female): precise, warm, the "here's what the data says" voice. Often asks the hook question.
+- **SIGMA (Σ)**: the narrator. A recorded human voice (pre-recorded clips from the private voice bank), never TTS. SIGMA asks the hook and has
+  **The Last Word**. SIGMA is a mystery handle: never name, describe, hint at or speculate about the person behind it, anywhere (scripts,
+  captions, titles, descriptions, Issues, messages). Never write the owner's name in this repo.
+- **VEDA** (cyan, calm American female): precise, warm, the "here's what the data says" voice.
 - **REGINALD** (gold, posh British butler): dry wit, verdicts and roasts. "I'm afraid", "old chap", "splendid". Never mean about people or places.
 - **TARA** (pink, bright American female): excited reactions, relatable comparisons (web series, chai, traffic), usually the closing question.
-Rotate who leads. No one gets more than 2 lines after the welcome. Vary who gives the big verdict from episode to episode.
-Never call them AIs on screen or in the script, and never claim they are real people.
+Rotate who leads. No host gets more than 2 lines after the welcome. Vary who gives the big verdict. Never call the hosts AIs, never claim they are real people.
+
+## Why variety matters (read once)
+YouTube refuses to pay channels whose videos look template-made with little variation. Every episode must feel different: a new subject, a rotating
+**format** (step 3), a different lead host, varied visuals, and a real insight (a comparison, a surprise, a "so what") rather than a list of numbers.
 
 ## Steps
 
-1. **Setup**: clone without the big `videos/` folder (it is only for Aniket's computer):
-   `git clone --depth 1 --filter=blob:none --sparse https://github.com/ketu98/claude-indiainnumbers ~/claude-indiainnumbers && cd ~/claude-indiainnumbers && git sparse-checkout set --no-cone '/*' '!/videos/'`
-   Then set a git identity (`git config user.name "India in Numbers bot"`, `git config user.email "aniket+claude@users.noreply.github.com"`),
-   run `bash setup.sh`, and run the `export IIN_FONTS=...` line it prints.
+1. **Setup**
+   - Clone without the big `videos/` folder:
+     `git clone --depth 1 --filter=blob:none --sparse https://github.com/ketu98/claude-indiainnumbers ~/claude-indiainnumbers && cd ~/claude-indiainnumbers && git sparse-checkout set --no-cone '/*' '!/videos/'`
+   - `git config user.name "India in Numbers bot"` and `git config user.email "iin-bot@users.noreply.github.com"`.
+   - `bash setup.sh`, then run the `export IIN_FONTS=...` line it prints.
+   - **Voice bank** (private): attach `ketu98/iin-voice-bank` with the add_repo tool (access "push") and clone it to `~/iin-voice-bank`
+     (`git clone --depth 1 https://github.com/ketu98/iin-voice-bank ~/iin-voice-bank`), then `export IIN_VOICE_BANK=~/iin-voice-bank`.
+     - If `~/iin-voice-bank/inbox/` has new recordings: `python3 engine/voice_bank.py inbox`. If it says a recording didn't split
+       cleanly, tell the owner exactly which section and why (from its message). Then commit and push the bank repo:
+       `cd ~/iin-voice-bank && git add -A && git commit -m "Process recordings" && git push`.
+     - `python3 engine/voice_bank.py status` shows which clips exist.
+     - If the bank repo can't be attached or is empty, carry on without SIGMA (VEDA asks the hook, no Last Word) and mention it in your message.
+     - Clips are private: never copy them into this repo, never send them anywhere.
 
-2. **Pick the topic**
-   - Read `topics/requests.md` first: if Aniket left a request there, do the top one and delete it from the list.
-   - Otherwise pick from `topics/backlog.md`, or a fresh timely angle (new official data released this week, e.g. NPCI monthly UPI numbers in the first days of a month).
-   - Read `episodes/LOG.md`: never repeat a topic, and don't use the same category as either of the last 2 episodes.
+2. **Pick the topic** (go wide: space, nature, sports, food, energy, money facts, culture, cities, transport, digital, tourism, education, geography, records…)
+   - `topics/requests.md` first: if the owner left a request, do the top one and delete it from the list.
+   - Otherwise **prefer a recorded SIGMA question** (`channel/sigma_script.json` sections A/B, kind `question`) that has a clip in the bank and
+     isn't in the `Q` column of `episodes/LOG.md`. The question is the hook, word for word.
+   - Else pick from `topics/backlog.md`, or a timely angle (fresh official data this week).
+   - Never repeat a topic in `episodes/LOG.md`, and don't use the same category as either of the last 2 episodes.
    - **Off-limits**: religion, caste, communities, politics, elections, parties or politicians, crime by group, health or medical advice,
      personal finance or investment advice, disasters or death tolls, anything that ranks people or states as "worse" in a demeaning way.
      Factual brand and company mentions are fine.
 
-3. **Research** (WebSearch / WebFetch)
-   - Need **at least 3 solid numbers**, each from a named, linkable source: official first (PIB, ministries, NPCI, RBI, IMD, MoSPI, data.gov.in,
-     World Bank, UN), else reputable media quoting them. Use the latest available figures and say the year on screen.
+3. **Pick the format**: not the same as either of the last 2 episodes (`Format` column in `episodes/LOG.md`). Set `"format"` in episode.json.
+   | format | header label | shape |
+   |---|---|---|
+   | `classic` | THE PANEL | question → 3 numbers → verdict |
+   | `myth` | MYTH OR FACT? | a popular belief as the question; the data reveals MYTH or FACT (big `fact` card) |
+   | `versus` | INDIA VS THE WORLD | India against other countries (`bars` or `vs`) |
+   | `then-now` | THEN VS NOW | 10–25 years ago vs today (`vs`), and what changed |
+   | `ranking` | THE RANKING | a top-5 of cities/states/things, never a "worst" ranking of people |
+   | `guess` | GUESS THE NUMBER | a host invites a guess ("Comment your guess before the reveal"), then the reveal |
+   | `viewer` | YOU ASKED | answers a viewer question from `topics/requests.md` (say "a viewer asked", never their name) |
+   | `tracker` | THE TRACKER | this month's official figure vs last month/last year (UPI, car sales, flights…) |
+
+4. **Research** (WebSearch / WebFetch)
+   - Need **at least 3 solid numbers**, each from a named, linkable source: official first (PIB, ministries, NPCI, RBI, IMD, MoSPI, ISRO,
+     data.gov.in, World Bank, UN), else reputable media quoting them. Use the latest figures and say the year on screen.
    - Cross-check key numbers with a second source where possible. If sources disagree, use the official one or drop the number.
    - Compute derived numbers (per day, per second, % change, ratios) **in Python** and present them as "about …".
    - Never invent or round misleadingly. If you can't find 3 solid numbers, pick another topic.
-   - Avoid crowdsourced sites (Numbeo etc.) unless labelled as estimates.
+   - Find one genuine insight: a surprising comparison or a "so what does that mean for daily life".
 
-4. **Write `episodes/epNN_<slug>/episode.json`** following `SCHEMA.md` (copy ep02 or ep03 as a template).
-   - NN = highest existing episode number + 1.
-   - Hook: a curiosity question of 10 words or fewer.
-   - Then 4–5 lines, the last one a `cta`. Each `say` about 25 words max, each `cap` about 20 words max. Target 40–50 s total.
+5. **Write `episodes/epNN_<slug>/episode.json`** following `SCHEMA.md` (copy the newest episode as a template).
+   - NN = highest existing episode number + 1 (pull main first).
+   - **Hook**: with a SIGMA question: `"hook": {"text": "<the clip's exact text>", "clip": "qNN", "intro": "i01"}` (alternate `i01`/`i02`,
+     or leave `intro` out sometimes). Without one: a curiosity question of 10 words or fewer.
+   - Then 4–5 host lines, the last one a `cta`. Each `say` about 25 words max, each `cap` about 20 words max.
+   - **The Last Word**: `"last_word": {"react": "rNN", "close": "sNN"}`. Pick the reaction whose tone fits the result
+     (`wow` surprising · `ouch` a bad number · `proud` India does well · `fun` teases a host who was right/wrong in this script · `calm` neutral);
+     the fun ones must match what happened (e.g. `r12` "Tara called it" only if Tara predicted it). Don't reuse a react or close used in
+     the last 3 episodes (see LOG). Total length target: 40–55 s.
    - Use a different visual type on consecutive lines. Give every number a visual.
    - Spell out years and big numbers in `say` ("twenty twenty-six", "seven hundred and forty one crore"); use digits in `cap`.
-   - Title: ≤ 70 chars, punchy, at most 1 emoji, with the main search words (e.g. "UPI", "Indian Railways", "Bangalore traffic") in the first 40 chars.
+   - Title: ≤ 70 chars, punchy, at most 1 emoji, with the main search words (e.g. "UPI", "Indian Railways", "tigers") in the first 40 chars.
      Description: 2–3 sentences with the key numbers, ending with a question for comments. Fill `sources` with every source used.
-   - **YouTube discoverability** (this goes straight to YouTube, so it must be accurate and on-topic):
-     - `hashtags`: 3–5, most important first. The first 3 show above the title on YouTube: 2 specific topic tags people actually search
-       (`#IndianRailways`, `#UPI`, `#Bengaluru`), then a broad one (`#India`, `#IndiaFacts`). `#Shorts` and `#IndiaInNumbers` are added
-       automatically. Use a WebSearch to see which hashtags are in use for the topic this week, and pick only ones directly about the
-       episode: unrelated "viral" tags break YouTube's misleading-metadata rules and can get a video removed.
-     - `youtube.tags`: 8–12 search phrases a viewer would type ("indian railways daily passengers", "how many people travel by train in india").
-     - Optional `youtube.title` / `youtube.description` override the plain ones for YouTube only. Usually leave them out.
+   - **YouTube discoverability** (goes straight to YouTube, so it must be accurate and on-topic):
+     - `hashtags`: 3–5, most important first. The first 3 show above the title: 2 specific topic tags people actually search
+       (`#IndianRailways`, `#ISRO`, `#Bengaluru`), then a broad one (`#India`, `#IndiaFacts`). `#Shorts` and `#IndiaInNumbers` are added
+       automatically. WebSearch which hashtags are in use for the topic this week; pick only ones directly about the episode.
+     - `youtube.tags`: 8–12 search phrases a viewer would type.
 
-5. **Preview and check**: `python3 engine/make_episode.py episodes/<folder> --preview <times>`, using times about 2 s into each line
-   (the command prints line start times). Open `work/preview.jpg` and check that text fits, nothing overlaps, and the numbers are right.
-   Fix the JSON and re-preview until it's clean.
+6. **Preview and check**: `python3 engine/make_episode.py episodes/<folder> --preview <times>`, using times about 2 s into each line
+   (it prints line start times) plus one in the hook and one in the Last Word. Open `work/preview.jpg`: text fits, nothing overlaps,
+   numbers are right, the header shows the format. If it printed "note: ... not in the voice bank", fix the clip id or drop it.
 
-6. **Render**: `python3 engine/make_episode.py episodes/<folder>` (VEDA asks the hook, since no recording exists yet).
+7. **Render**: `python3 engine/make_episode.py episodes/<folder>`. The file ends in `_sigma.mp4` when SIGMA's voice was used.
 
-7. **Deliver to Aniket** (he may be away, so use status "proactive"):
-   Output files are named with the IST date and time they were made, e.g. `2026-11-28_08-52_ep04_chai-vs-coffee_veda.mp4`
-   and `2026-11-28_08-52_ep04_chai-vs-coffee_upload.txt`. Keep those names.
-   - SendUserFile: the mp4 from `out/`, caption "Ep NN · <date, time IST> · <title>".
-   - SendUserFile: the `*_upload.txt` from `out/` (title, description, sources, hashtags, hook line).
-   - SendUserMessage, short: the topic, the 3 key numbers with their sources, "It will be posted to YouTube automatically
-     (the Issue will say when; label it `skipped` to stop it)", and
-     "Want your voice on the opening question? Record: '<hook text>' and send it here, and I'll redo the video."
+8. **Deliver to the owner** (status "proactive"; the owner may be away):
+   - SendUserFile: the mp4 from `out/`, caption "Ep NN · <date, time IST> · <format> · <title>".
+   - SendUserMessage, short: the topic, the 3 key numbers with sources, which SIGMA clips were used (or why none),
+     and "It will be posted to YouTube automatically (the Issue will say when; label it `skipped` to stop it)."
 
-8. **Publish to GitHub for review** (this also commits and pushes everything):
-   - Copy the `*_upload.txt` from `out/` next to `episode.json` as `upload.txt`, and append a line to `episodes/LOG.md`:
-     `| NN | YYYY-MM-DD | <category> | <topic> | <title> |`.
+9. **Publish to GitHub** (commits and pushes everything):
+   - Copy the `*_upload.txt` from `out/` next to `episode.json` as `upload.txt`, and append to `episodes/LOG.md`:
+     `| NN | YYYY-MM-DD | <category> | <format> | short | <hook clip or -> | <react>+<close or -> | <topic> | <title> |`.
    - `git add episodes topics && git commit -m "Ep NN: <topic> (script)"` (skip if nothing changed).
-   - `python3 engine/publish_github.py episodes/<folder> --slot <Morning|Afternoon>`
-     It copies the video and upload text into `videos/YYYY-MM/` (date-time names), opens the episode's review Issue labelled
-     `episode` + `ready-to-review` with a checklist, regenerates `TRACKER.md` / `TRACKER.csv` (status comes from Issue labels),
-     then commits and pushes to main. Put the Issue link it prints in your message to Aniket.
-   - If it fails, fix the cause and re-run it: it is safe to repeat (one Issue per episode).
+   - `python3 engine/publish_github.py episodes/<folder> --slot Daily`
+     It copies the video into `videos/YYYY-MM/`, opens the episode's Issue, rebuilds `TRACKER.md` / `TRACKER.csv`, commits and pushes.
+     Put the Issue link it prints in your message. Safe to re-run if it fails.
 
-9. **YouTube**: nothing to do. After your push, the uploader workflow picks the episode up within minutes, comments on its Issue with
-   the YouTube link and go-live time, and keeps `TRACKER.md` up to date (status, live time, 48-hour views).
+10. **YouTube**: nothing to do. The uploader workflow picks it up after your push and comments on the Issue with the link and go-live time.
 
-10. **If Aniket replies with a recording**: save it as `episodes/<folder>/hook.<ext>` (never commit it), re-render (step 6 picks it up
-   automatically and cleans the audio), send the new mp4, then re-run step 8's `publish_github.py`: it updates the same Issue
-   and adds the `narrator-voice` label. If the old version is scheduled but not live yet, the uploader keeps it private and posts
-   the new one instead. If it's already live, it is left as it is.
+11. **If the owner sends a one-off recording** for an episode: save it as `episodes/<folder>/hook.<ext>` (never commit it), re-render
+   (it is cleaned and disguised automatically), send the new mp4, then re-run `publish_github.py`. If the old version isn't live yet,
+   the uploader keeps it private and posts the new one.

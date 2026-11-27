@@ -1,0 +1,138 @@
+{
+ "ep": 0,
+ "kind": "long",
+ "format": "long",
+ "slug": "example-longform",
+ "topic": "How does Indian Railways keep the whole country moving?",
+ "hook": {
+  "text": "How does Indian Railways keep the whole country moving?",
+  "clip": "L04"
+ },
+ "sigma_intro": "x01",
+ "chapters": [
+  {
+   "title": "Two crore people a day",
+   "lines": [
+    {
+     "spk": "VEDA",
+     "say": "Indian Railways carried seven hundred and forty one crore passengers in twenty twenty-five, twenty-six.",
+     "cap": "741 CRORE passengers in FY 2025-26",
+     "visual": {
+      "type": "bigstat",
+      "value": 741,
+      "suffix": " crore",
+      "label": "passenger journeys, FY 2025-26",
+      "count_at": "741"
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "That's about two crore people every single day!",
+     "cap": "About 2 CRORE every DAY!",
+     "visual": {
+      "type": "fact",
+      "kicker": "Every day",
+      "big": "~2 crore",
+      "lines": [
+       {
+        "text": "More than Australia's population",
+        "at": "DAY!"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "title": "The fastest trains",
+   "bridge": "x03",
+   "lines": [
+    {
+     "spk": "REGINALD",
+     "say": "Vande Bharat ridership grew thirty four percent, I'm told. Splendid.",
+     "cap": "Vande Bharat ridership: +34%",
+     "visual": {
+      "type": "vs",
+      "title": "Vande Bharat riders",
+      "subtitle": "crore per year",
+      "a": [
+       "FY25",
+       2.97
+      ],
+      "b": [
+       "FY26",
+       3.98
+      ],
+      "unit": " cr",
+      "decimals": 2,
+      "highlight": "b",
+      "pill": {
+       "text": "+34%",
+       "at": "+34%"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "title": "The waitlist problem",
+   "lines": [
+    {
+     "spk": "VEDA",
+     "say": "But three point three nine crore people could not travel on waitlisted tickets.",
+     "cap": "3.39 CRORE couldn't travel on waitlisted tickets",
+     "visual": {
+      "type": "bigstat",
+      "value": 3.39,
+      "decimals": 2,
+      "suffix": " crore",
+      "label": "missed trips, waitlisted",
+      "count_at": "3.39"
+     }
+    }
+   ]
+  }
+ ],
+ "lines": [
+  {
+   "spk": "TARA",
+   "say": "What's your worst train ticket story? Tell us in the comments!",
+   "cap": "Your worst TICKET story?",
+   "visual": {
+    "type": "cta",
+    "title": "Your story?",
+    "chips": [
+     "Tatkal",
+     "RAC",
+     "Waitlist"
+    ],
+    "button": "COMMENT"
+   }
+  }
+ ],
+ "last_word": {
+  "react": "r04",
+  "close": "x05"
+ },
+ "title": "How Indian Railways moves 2 CRORE people a day 🚆",
+ "description": "Indian Railways moves about 2 crore people a day. How does it work, what's growing fastest, and where does it fall short?\n\nThe panel goes chapter by chapter with official numbers.\n\nWhat's your most memorable train journey?",
+ "hashtags": [
+  "#IndianRailways",
+  "#India"
+ ],
+ "sources": [
+  {
+   "name": "Railway Ministry via ThePrint (Apr 2026)",
+   "url": "https://theprint.in/india/record-1670-million-tonnes-cargo-741-cr-passengers-transported-in-2025-26-railway-ministry/2894368"
+  }
+ ],
+ "youtube": {
+  "tags": [
+   "indian railways facts",
+   "how many people travel by train in india",
+   "vande bharat ridership",
+   "indian railways waitlist"
+  ]
+ },
+ "_note": "Example only (shortened: a real long-form has 4-6 chapters of 6-12 lines). Not published."
+}

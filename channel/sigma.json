@@ -1,0 +1,8 @@
+{
+ "_about": "SIGMA, the channel's anonymous narrator (the owner's recorded voice). voice_fx disguises the voice at render time: 'sigma' = deeper pitch + light hologram echo, 'subtle' = slightly deeper only, 'none' = natural voice.",
+ "name": "SIGMA",
+ "glyph": "Σ",
+ "color": [190, 160, 255],
+ "voice_fx": "sigma",
+ "pitch_semitones": -2.0
+}

@@ -1,6 +1,6 @@
 """Regenerate TRACKER.md and TRACKER.csv at the repo root from episodes/*/episode.json
 and the live labels of each episode's GitHub issue (status = ready-to-review / uploaded / needs-fix / skipped).
-The YouTube link is taken from the issue body line "YouTube link: <url>" or the issue comments, if Aniket pasted one."""
+The YouTube link is taken from the issue body line "YouTube link: <url>" or the issue comments, if the owner pasted one."""
 import csv, glob, json, os, re, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,7 +34,7 @@ for epj in glob.glob(os.path.join(ROOT, 'episodes', '*', 'episode.json')):
                      issue=f"https://github.com/{REPO}/issues/{g['issue']}" if g.get('issue') else '',
                      sources='; '.join(s['name'] for s in E.get('sources', [])), youtube=yt, live_ist=golive,
                      post_slot=u.get('slot') or ('now' if u.get('published') and not u.get('slot') else ''), views_48h=u.get('views_48h', ''),
-                     folder=os.path.basename(os.path.dirname(epj))))
+                     folder=os.path.basename(os.path.dirname(epj)), kind=g.get('kind', 'short'), format=E.get('format', 'classic')))
 rows.sort(key=lambda r: r['ep'], reverse=True)
 
 with open(os.path.join(ROOT, 'TRACKER.csv'), 'w', newline='', encoding='utf-8') as f:
@@ -43,13 +43,13 @@ with open(os.path.join(ROOT, 'TRACKER.csv'), 'w', newline='', encoding='utf-8') 
 def esc(s): return str(s).replace('|', '\\|')
 lines = ['# 📊 Episode Tracker', '',
          'Auto-generated on every run (newest first). Status comes from each episode\'s Issue label, set by the YouTube uploader: '
-         '`ready-to-review` (queued) → `scheduled` → `uploaded`. Label an issue `skipped` before it goes live to stop it.', '',
+         '`ready-to-review` (queued) → `scheduled` → `uploaded`. Label an issue `skipped` before it goes live to stop it. 🎞 = long-form.', '',
          '| Ep | Made (IST) | Status | Live (IST) | Title | Voice | Video | Issue | YouTube | Views 48h |',
          '|---:|---|---|---|---|---|---|---|---|---:|']
 for r in rows:
     vid = f"[▶ mp4]({r['video']})" if r['video'] else ''
     rev = f"[issue]({r['issue']})" if r['issue'] else ''
     yt = f"[watch]({r['youtube']})" if r['youtube'] else ''
-    lines.append(f"| {r['ep']:02d} | {r['made']} | {r['status']} | {r['live_ist']} | {esc(r['title'])} | {r['voice']} | {vid} | {rev} | {yt} | {r['views_48h']} |")
+    lines.append(f"| {r['ep']:02d} | {r['made']} | {r['status']} | {r['live_ist']} | {'🎞 ' if r.get('kind') == 'long' else ''}{esc(r['title'])} | {r['voice']} | {vid} | {rev} | {yt} | {r['views_48h']} |")
 open(os.path.join(ROOT, 'TRACKER.md'), 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
 print('tracker:', len(rows), 'episodes')

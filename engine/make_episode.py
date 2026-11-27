@@ -1,8 +1,11 @@
-"""India in Numbers — turn an episode.json into a finished 9:16 Short.
+"""India in Numbers — turn an episode.json into a finished video.
 
 usage: python3 engine/make_episode.py episodes/<ep-folder> [--preview 2,9,15]
-Folder must contain episode.json. Optional: hook.(mp3|m4a|wav|ogg|aac) = narrator recording.
-Writes <folder>/out/<YYYY-MM-DD_HH-MM>_<epNN_slug>_<veda|narrator>.mp4 and ..._upload.txt (IST time)
+- Short (default): 9:16, 1080x1920.  Long-form ("kind": "long", with "chapters"): 16:9, 1920x1080, plus a thumbnail.
+- SIGMA, the anonymous narrator, speaks clips from the private voice bank ($IIN_VOICE_BANK, default ~/iin-voice-bank):
+  "hook": {"clip": "q01", "intro": "i01"} and "last_word": {"react": "r02", "close": "s03"}. Missing clips fall back to VEDA / are skipped.
+  A hook.(mp3|m4a|wav|ogg|aac) file in the folder is also used as SIGMA's hook. The voice disguise is set in channel/sigma.json.
+Writes <folder>/out/<YYYY-MM-DD_HH-MM>_<epNN_slug>_<veda|sigma>.mp4, ..._upload.txt (IST time), and for long-form ..._chapters.json + ..._thumb.jpg
 """
 import json, math, os, subprocess, sys, glob, hashlib
 import numpy as np, soundfile as sf
@@ -12,6 +15,16 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 W, H, FPS, SR = 1080, 1920, 30, 24000
 FD = os.environ.get('IIN_FONTS', '/usr/share/fonts/opentype/inter/')
 MODEL_DIR = os.environ.get('IIN_MODELS', os.path.expanduser('~/.cache/iin'))
+BANK = os.path.expanduser(os.environ.get('IIN_VOICE_BANK', '~/iin-voice-bank'))
+SIG = json.load(open(os.path.join(os.path.dirname(HERE), 'channel', 'sigma.json'), encoding='utf-8'))
+SNAME, SGLYPH, SCOL = SIG.get('name', 'SIGMA'), SIG.get('glyph', 'Σ'), tuple(SIG.get('color', (190, 160, 255)))
+# layout (portrait canvas). Long-form renders a taller portrait canvas and rearranges it into 16:9 (compose_land)
+LONG = False; OUT_W, OUT_H = W, H; BUB_Y, ROB_Y, NAME_Y = 1270, 1615, 1640
+FORMATS = {  # episode "format" -> header label, accent colour
+    'classic': ('THE PANEL', (255, 138, 61)), 'myth': ('MYTH OR FACT?', (255, 96, 96)), 'versus': ('INDIA VS THE WORLD', (80, 200, 255)),
+    'then-now': ('THEN VS NOW', (255, 214, 120)), 'ranking': ('THE RANKING', (140, 240, 140)), 'viewer': ('YOU ASKED', (255, 105, 200)),
+    'tracker': ('THE TRACKER', (190, 160, 255)), 'guess': ('GUESS THE NUMBER', (110, 240, 215)), 'long': ('THE LONG VERSION', (255, 186, 70))}
+NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve']
 
 # ---------------------------------------------------------------- cast
 CAST = {
@@ -19,6 +32,7 @@ CAST = {
     'REGINALD': dict(voice='bm_george', speed=1.00, lang='en-gb', col=(255, 186, 70),  x=210),
     'TARA':     dict(voice='af_heart',  speed=1.05, lang='en-us', col=(255, 105, 200), x=870),
 }
+CAST['SIGMA'] = dict(voice=None, speed=1.0, lang='', col=SCOL, x=540)   # recorded voice only, never TTS
 ORDER = ['REGINALD', 'VEDA', 'TARA']
 WELCOME = [
     ('VEDA', "Hello, I'm Veda.", "Hello, I'm VEDA."),
@@ -78,7 +92,10 @@ def fmt(v, spec):
 EP_DIR = None; EP = None; LINES = []; HOOK = None; HOOK_ENV = None; HOOK_MODE = 'veda'; HOOK_AT = 0.15; T_END = 0
 def load(ep_dir):
     global EP_DIR, EP
+    global LONG, H, OUT_W, OUT_H, BUB_Y, ROB_Y, NAME_Y
     EP_DIR = ep_dir; EP = json.load(open(os.path.join(ep_dir, 'episode.json')))
+    if EP.get('kind') == 'long' or EP.get('chapters'):
+        LONG = True; H = 2400; OUT_W, OUT_H = 1920, 1080; BUB_Y, ROB_Y, NAME_Y = 1400, 2000, 2025
     os.makedirs(os.path.join(ep_dir, 'work'), exist_ok=True); os.makedirs(os.path.join(ep_dir, 'out'), exist_ok=True)
 
 def wpath(n): return os.path.join(EP_DIR, 'work', n)
@@ -105,34 +122,89 @@ def tts(spk, text, out):
     subprocess.run(['cp', cpath, out], check=True)
     return sf.read(out)[0]
 
+def bank_has(cid): return bool(cid) and os.path.exists(os.path.join(BANK, 'clips', f'{cid}.m4a'))
+def bank_text(cid):
+    try: return json.load(open(os.path.join(BANK, 'bank.json'), encoding='utf-8')).get(cid, {}).get('text', '')
+    except Exception: return ''
+
+def sigma_fx():
+    fx, st = SIG.get('voice_fx', 'sigma'), float(SIG.get('pitch_semitones', -2.0))
+    if fx == 'none': return 'aresample=48000,loudnorm=I=-16:TP=-1.5:LRA=7'
+    r = 2 ** (st / 12)
+    ch = f'aresample=48000,asetrate={int(48000 * r)},aresample=48000,atempo={1 / r:.5f}'
+    if fx == 'sigma': ch += ',aecho=0.8:0.5:14:0.16,equalizer=f=250:t=q:w=1:g=2'
+    return ch + ',loudnorm=I=-16:TP=-1.5:LRA=7'
+
+def sigma_audio(src, out):
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-af', sigma_fx() + f',aresample={SR}', '-ac', '1', out], check=True)
+    return sf.read(out)[0]
+
+def sigma_clips(ids, out):
+    parts = []
+    for k, cid in enumerate(ids):
+        parts.append(sigma_audio(os.path.join(BANK, 'clips', f'{cid}.m4a'), wpath(f'sig_{cid}.wav')))
+        if k < len(ids) - 1: parts.append(np.zeros(int(0.3 * SR)))
+    a = np.concatenate(parts); sf.write(out, a, SR); return a
+
 def env_of(x):
     n = int(len(x) / SR * FPS) + 1; hop = SR // FPS
     e = np.array([np.sqrt(np.mean(x[i * hop:(i + 1) * hop] ** 2)) if i * hop < len(x) else 0 for i in range(n)])
     return np.clip(e / (np.percentile(e[e > 0], 90) + 1e-9), 0, 1) if np.any(e > 0) else e
 
+HOOK_Q0 = 0.0; CHAPTERS = []
 def build_lines():
-    global LINES, HOOK, HOOK_ENV, HOOK_MODE, T_END
+    global LINES, HOOK, HOOK_ENV, HOOK_MODE, T_END, HOOK_Q0, CHAPTERS
+    hk = EP['hook']; force_veda = os.environ.get('IIN_HOOK', '') == 'veda'
     rec = [p for p in glob.glob(os.path.join(EP_DIR, 'hook.*')) if p.split('.')[-1].lower() in ('mp3', 'm4a', 'wav', 'ogg', 'aac', 'opus', 'webm')]
-    if rec and os.environ.get('IIN_HOOK', '') != 'veda':
-        HOOK_MODE = 'narrator'
+    if hk.get('clip') and bank_has(hk['clip']) and not force_veda:
+        HOOK_MODE = 'sigma'; intro = [hk['intro']] if hk.get('intro') and bank_has(hk['intro']) else []
+        HOOK = sigma_clips(intro + [hk['clip']], wpath('hook.wav'))
+        HOOK_Q0 = (len(sigma_clips(intro, wpath('hook_intro.wav'))) / SR + 0.3) if intro else 0.0
+    elif rec and not force_veda:
+        HOOK_MODE = 'sigma'
         subprocess.run([sys.executable, os.path.join(HERE, 'clean_voice.py'), rec[0], wpath('hook48.wav')], check=True)
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wpath('hook48.wav'), '-ar', str(SR), '-ac', '1', wpath('hook.wav')], check=True)
-        HOOK = sf.read(wpath('hook.wav'))[0]
+        HOOK = sigma_audio(wpath('hook48.wav'), wpath('hook.wav'))
     else:
-        HOOK_MODE = 'veda'; HOOK = tts('VEDA', EP['hook'].get('say', EP['hook']['text']), wpath('hook.wav'))
+        if hk.get('clip'): print(f"note: hook clip {hk['clip']} not in the voice bank ({BANK}); VEDA asks instead")
+        HOOK_MODE = 'veda'; HOOK = tts('VEDA', hk.get('say', hk['text']), wpath('hook.wav'))
     HOOK_ENV = env_of(HOOK)
     seq = []
     if EP.get('welcome', True):
         for spk, say, cap in WELCOME: seq.append(dict(spk=spk, say=say, cap=cap, visual={'type': 'welcome'}))
-    seq += EP['lines']
+    if EP.get('sigma_intro'):
+        seq.append(dict(spk='SIGMA', clips=[EP['sigma_intro']], visual={'type': 'sigma', 'kicker': FORMATS.get(EP.get('format', 'long'), FORMATS['long'])[0]}))
+    if EP.get('chapters'):
+        for n, ch in enumerate(EP['chapters'], 1):
+            card = {'type': 'chapter', 'n': n, 'title': ch['title']}
+            if ch.get('bridge') and bank_has(ch['bridge']):
+                seq.append(dict(spk='SIGMA', clips=[ch['bridge']], visual=card, chapter=ch['title']))
+                card = dict(card, quiet=True)
+            host = ch.get('host', ['VEDA', 'TARA', 'REGINALD'][n % 3])
+            seq.append(dict(spk=host, say=f"Chapter {NUMW[n] if n < len(NUMW) else n}. {ch.get('say_title', ch['title'])}.",
+                            cap=f"CHAPTER {n}: {ch['title']}", visual=card, chapter=None if card.get('quiet') else ch['title']))
+            seq += ch['lines']
+    seq += EP.get('lines', [])
+    lw = EP.get('last_word')
+    if lw:
+        ids = [c for c in (lw.get('react'), lw.get('close')) if c]
+        if ids and all(bank_has(c) for c in ids):
+            seq.append(dict(spk='SIGMA', clips=ids, cap=lw.get('cap'), visual={'type': 'sigma', 'kicker': lw.get('kicker', 'THE LAST WORD')}))
+        else: print(f'note: last_word clips {ids} not all in the voice bank; skipped')
     t = HOOK_AT + len(HOOK) / SR + 0.35
-    LINES = []
+    LINES = []; CHAPTERS = [(0.0, 'Intro')]
     for n, L in enumerate(seq):
         L = dict(L); assert L['spk'] in CAST, L['spk']
-        L['audio'] = tts(L['spk'], L['say'], wpath(f'l{n}.wav'))
+        if L['spk'] == 'SIGMA':
+            if not L.get('clips') or not all(bank_has(c) for c in L['clips']):
+                print(f"note: SIGMA clips {L.get('clips')} missing from the voice bank; line skipped"); continue
+            L['audio'] = sigma_clips(L['clips'], wpath(f'l{n}.wav'))
+            L['cap'] = L.get('cap') or ' '.join(bank_text(c) for c in L['clips'])
+        else:
+            L['audio'] = tts(L['spk'], L['say'], wpath(f'l{n}.wav'))
         L['dur'] = len(L['audio']) / SR; L['env'] = env_of(L['audio']); L['start'] = t
         L['vis'] = L.get('visual', {}).get('type', 'none')
-        LINES.append(L); t += L['dur'] + 0.25
+        if L.get('chapter'): CHAPTERS.append((t - 0.3, L['chapter']))
+        LINES.append(L); t += L['dur'] + (0.5 if L['vis'] == 'chapter' else 0.25)
     T_END = t + 1.2
 
 def wt(L, key, default=0.0):
@@ -206,6 +278,8 @@ def sfx_events():
         elif v == 'fact':
             ev.append((s0 + 0.1, 'pop', 0.2))
             for i, ln in enumerate(V.get('lines', [])): ev.append((s0 + wt(L, ln.get('at'), 1.2 + 0.8 * i), 'pop_small', 0.14))
+        elif v in ('chapter', 'sigma'):
+            ev += [(s0 + 0.05, 'rise', 0.12), (s0 + 0.4, 'ding2' if v == 'sigma' else 'ding', 0.16)]
         elif v == 'cta':
             n = len(V.get('chips', []))
             ev += [(s0 + 0.1, 'pop', 0.22)] + [(s0 + 0.5 + 0.1 * k, 'pop_small', 0.09) for k in range(n)] + [(s0 + 0.5 + 0.1 * n + 0.3, 'ding', 0.2)]
@@ -321,18 +395,19 @@ def draw_robots(img, t, speaker, mouth):
         if not active: L = ImageEnhance.Brightness(L).enhance(0.62 if speaker else 0.9)
         L = L.resize((max(1, int(420 * sc)), max(1, int(520 * sc))), Image.BICUBIC)
         bob = math.sin(t * (3.2 if active else 1.6) + ph) * (9 if active else 4) - m * 8
-        X = CAST[spk]['x']; x = X - L.width / 2; y = 1615 - L.height + bob
+        X = CAST[spk]['x']; x = X - L.width / 2; y = ROB_Y - L.height + bob
         if active:
             dd = ImageDraw.Draw(img, 'RGBA')
             for k in range(3):
                 a0 = (t * 120 + k * 120) % 360
-                dd.arc((X - 150, 1574, X + 150, 1626), a0, a0 + 70, fill=CAST[spk]['col'] + (200,), width=4)
+                dd.arc((X - 150, ROB_Y - 41, X + 150, ROB_Y + 11), a0, a0 + 70, fill=CAST[spk]['col'] + (200,), width=4)
         img.paste(L, (int(x), int(y)), L)
         if appear > 0.6:
-            put_text(img, (X, 1640), spk, F('Inter-Bold.otf', 26 if active else 22), CAST[spk]['col'] if active else (150, 150, 175))
+            put_text(img, (X, NAME_Y), spk, F('Inter-Bold.otf', 26 if active else 22), CAST[spk]['col'] if active else (150, 150, 175))
 
 # ---------------------------------------------------------------- background / header / hook
 def make_bg():
+    if LONG: return Image.new('RGB', (W, H), FLAT)
     y = np.linspace(0, 1, H)[:, None, None]
     arr = (np.array((10, 14, 38)) * (1 - y) + np.array((30, 14, 50)) * y) * np.ones((1, W, 1))
     yy, xx = np.mgrid[0:H, 0:W]
@@ -342,9 +417,11 @@ def make_bg():
     for x in range(0, W, 60): d.line((x, 0, x, H), fill=(255, 255, 255, 7))
     for yv in range(0, H, 60): d.line((0, yv, W, yv), fill=(255, 255, 255, 7))
     return im
+FLAT = (14, 15, 40)
 RNG = np.random.default_rng(9)
 DOTS = [(RNG.uniform(0, 1), RNG.uniform(0.02, 0.06), RNG.integers(0, 3), RNG.random() < 0.5) for _ in range(46)]
 def ambient(d, t):
+    if LONG: return
     lanes = [(250, 1120), (380, 1240), (1010, 1290)]
     for u0, sp, lane, red in DOTS:
         y0, y1 = lanes[lane]; u = (u0 + (sp if red else -sp) * t) % 1
@@ -355,8 +432,10 @@ def header(img, d, t):
     f = F('InterDisplay-Black.otf', 44); s = 'INDIA IN NUMBERS'; sp = 6
     tot = sum(f.getlength(c) for c in s) + sp * (len(s) - 1); x = 540 - tot / 2; a = eo(prog(t, 0, 0.4))
     for c in s: put_text(img, (x, 120), c, f, (255, 255, 255), a, 'lm'); x += f.getlength(c) + sp
-    w = 250; d.rounded_rectangle((540 - w / 2, 158, 540 + w / 2, 198), 20, fill=(255, 138, 61, int(255 * a)))
-    put_text(img, (540, 178), f"THE PANEL · EP {int(EP.get('ep', 1)):02d}", F('Inter-Bold.otf', 22), (20, 14, 30), a)
+    lab, acc = FORMATS.get(EP.get('format') or ('long' if LONG else 'classic'), FORMATS['classic'])
+    s = f"{lab} · EP {int(EP.get('ep', 1)):02d}"; w = F('Inter-Bold.otf', 22).getlength(s) + 56
+    d.rounded_rectangle((540 - w / 2, 158, 540 + w / 2, 198), 20, fill=acc + (int(255 * a),))
+    put_text(img, (540, 178), s, F('Inter-Bold.otf', 22), (20, 14, 30), a)
     hc = (80, 220, 255, 90)
     for (x, y, sx, sy) in ((40, 250, 1, 1), (1040, 250, -1, 1), (40, 945, 1, -1), (1040, 945, -1, -1)):
         d.line((x, y, x + 60 * sx, y), fill=hc, width=4); d.line((x, y, x, y + 60 * sy), fill=hc, width=4)
@@ -375,7 +454,7 @@ _HT = None
 def hook_times():
     global _HT
     if _HT is None:
-        on = np.where(HOOK_ENV > 0.15)[0]
+        on = np.where(HOOK_ENV > 0.15)[0]; on = on[on >= int(HOOK_Q0 * FPS)]
         s0, s1 = (on[0] / FPS, on[-1] / FPS) if len(on) else (0.1, len(HOOK) / SR)
         hl = hook_lines(); tot = sum(len(t) + 1 for t in hl); acc = 0; _HT = []
         for t in hl: _HT.append(HOOK_AT + s0 + (s1 - s0) * acc / tot - 0.08); acc += len(t) + 1
@@ -384,9 +463,10 @@ def hook_times():
 def hook_panel(img, d, t):
     end = HOOK_AT + len(HOOK) / SR
     out = eo(prog(t, end + 0.05, end + 0.33)); a0 = eo(prog(t, 0, 0.3)) * (1 - out)
-    tag = 'VEDA ASKS' if HOOK_MODE == 'veda' else 'NARRATOR'
-    tc = CAST['VEDA']['col'] if HOOK_MODE == 'veda' else (255, 160, 90)
-    d.rounded_rectangle((420, 318, 660, 362), 22, outline=(255, 255, 255, int(160 * a0)), width=2)
+    tag = 'VEDA ASKS' if HOOK_MODE == 'veda' else f'{SGLYPH}  {SNAME} ASKS'
+    tc = CAST['VEDA']['col'] if HOOK_MODE == 'veda' else SCOL
+    tw = F('Inter-Bold.otf', 22).getlength(tag) + 70
+    d.rounded_rectangle((540 - tw / 2, 318, 540 + tw / 2, 362), 22, outline=tc + (int(200 * a0),), width=2)
     put_text(img, (540, 340), tag, F('Inter-Bold.otf', 22), (230, 230, 245), a0)
     hl = hook_lines(); n = len(hl); lh = 130 if n <= 4 else 110
     for k, (s, at) in enumerate(zip(hl, hook_times())):
@@ -553,7 +633,39 @@ def panel_cta(img, d, u, a, L):
         d.polygon([(cx - 60 * sc, cy + 66 * sc), (cx - 100 * sc, cy + 110 * sc), (cx - 20 * sc, cy + 66 * sc)], fill=HI + (int(255 * a),))
         put_text(img, (cx, cy), b, fit_font('InterDisplay-Black.otf', 50, b, 270), (20, 14, 30), a, 'mm', sc)
 
-PANELS = {'welcome': panel_welcome, 'bars': panel_bars, 'bigstat': panel_bigstat, 'vs': panel_vs,
+def glow_text(img, xy, s, font, col, a, scale=1.0, blur=18):
+    asc, desc = font.getmetrics(); w = int(font.getlength(s)) + 2 * blur + 20; h = asc + desc + 2 * blur + 20
+    lay = Image.new('RGBA', (w, h), col + (0,)); ImageDraw.Draw(lay).text((w / 2, h / 2), s, font=font, fill=col + (255,), anchor='mm')
+    g = lay.filter(ImageFilter.GaussianBlur(blur)); out = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    out.alpha_composite(g); out.alpha_composite(g); out.alpha_composite(lay)
+    if a < 1: out.putalpha(out.getchannel('A').point(lambda v: int(v * a)))
+    if abs(scale - 1) > 1e-3: out = out.resize((max(1, int(w * scale)), max(1, int(h * scale))), Image.BICUBIC)
+    img.paste(out, (int(xy[0] - out.width / 2), int(xy[1] - out.height / 2)), out)
+
+def panel_sigma(img, d, u, a, L):
+    V = L['visual']; p = prog(u, 0.05, 0.45)
+    put_text(img, (540, 345), V.get('kicker', 'THE LAST WORD'), F('Inter-Bold.otf', 40), SCOL, a * eo(p))
+    j = int(u * FPS); e = float(L['env'][j]) if 0 <= j < len(L['env']) else 0.0
+    glow_text(img, (540, 600), SGLYPH, F('InterDisplay-Black.otf', 300), SCOL, a * eo(p), (back(p) if p < 1 else 1) * (1 + 0.06 * e))
+    put_text(img, (540, 820), SNAME, F('InterDisplay-Black.otf', 60), (240, 236, 255), a * eo(prog(u, 0.3, 0.6)))
+    for k in range(3):
+        r = 150 + 40 * k + 30 * ((u * 0.8 + k / 3) % 1)
+        d.ellipse((540 - r, 600 - r, 540 + r, 600 + r), outline=SCOL + (int(90 * a * (1 - ((u * 0.8 + k / 3) % 1))),), width=3)
+
+def panel_chapter(img, d, u, a, L):
+    V = L['visual']; p = prog(u, 0.05, 0.4); acc = FORMATS.get(EP.get('format', 'long'), FORMATS['long'])[1]
+    put_text(img, (540, 420), f"CHAPTER {V.get('n', 1)}", F('Inter-Bold.otf', 48), acc, a * eo(p))
+    words = V.get('title', '').split(); f = F('InterDisplay-Black.otf', 110)
+    for size in (110, 96, 84, 72):
+        f = F('InterDisplay-Black.otf', size); ls = wrap(words, f, 940)
+        if len(ls) <= 3: break
+    for k, ln in enumerate(ls[:3]):
+        q = prog(u, 0.15 + 0.12 * k, 0.5 + 0.12 * k)
+        put_text(img, (540, 560 + k * size * 1.1), ' '.join(ln), f, (255, 255, 255), a * eo(q), 'mm', back(q) if q < 1 else 1)
+    w = 600 * eo(prog(u, 0.3, 0.9)); y = 560 + len(ls[:3]) * size * 1.1 + 10
+    d.rounded_rectangle((540 - w / 2, y, 540 + w / 2, y + 8), 4, fill=acc + (int(255 * a),))
+
+PANELS = {'welcome': panel_welcome, 'sigma': panel_sigma, 'chapter': panel_chapter, 'bars': panel_bars, 'bigstat': panel_bigstat, 'vs': panel_vs,
           'gauge': panel_gauge, 'fact': panel_fact, 'cta': panel_cta, 'none': lambda *a: None}
 
 def wrap(words, f, maxw):
@@ -570,16 +682,17 @@ def bubble(img, d, L, u):
     for size in (46, 42, 38, 34):
         f = F('Inter-Bold.otf', size); lines = wrap(words, f, 860)
         if len(lines) <= 3: break
-    lh = size * 1.28; bh = 60 + lh * len(lines) + 18; top = 1270 - bh - 22
+    lh = size * 1.28; bh = 60 + lh * len(lines) + 18; top = BUB_Y - bh - 22
     cxm, cym = 540, top + bh / 2
     def S(x, y): return (cxm + (x - cxm) * sc, cym + (y - cym) * sc)
     tx = CAST[L['spk']]['x']; col = CAST[L['spk']]['col']
     d.polygon([S(tx - 26, top + bh - 2), S(tx + 26, top + bh - 2), S(tx, top + bh + 30)], fill=(250, 248, 255, int(255 * a)))
     bx0, by0 = S(60, top); bx1, by1 = S(1020, top + bh)
     d.rounded_rectangle((bx0, by0, bx1, by1), int(32 * sc), fill=(250, 248, 255, int(255 * a)))
-    nf = F('Inter-Bold.otf', 24); nw = nf.getlength(L['spk']) + 36
+    nm = f'{SGLYPH} {SNAME}' if L['spk'] == 'SIGMA' else L['spk']
+    nf = F('Inter-Bold.otf', 24); nw = nf.getlength(nm) + 36
     d.rounded_rectangle((bx0 + 28, by0 - 20, bx0 + 28 + nw, by0 + 22), 21, fill=col + (int(255 * a),))
-    put_text(img, (bx0 + 28 + nw / 2, by0 + 1), L['spk'], nf, (255, 255, 255), a)
+    put_text(img, (bx0 + 28 + nw / 2, by0 + 1), nm, nf, (255, 255, 255) if L['spk'] != 'SIGMA' else (24, 18, 50), a)
     total = sum(len(w) + 1 for w in words); done = clamp(u / (L['dur'] * 0.93)) * total; acc = 0
     for li, ln in enumerate(lines):
         y = top + 50 + li * lh + lh / 2 - 12; x = 540 - f.getlength(' '.join(ln)) / 2
@@ -608,7 +721,65 @@ def frame(i):
         if 0 <= j < len(cur['env']): speaker, mouth = cur['spk'], float(cur['env'][j]) ** 0.7
         elif u < cur['dur'] + 0.25: speaker = cur['spk']
     draw_robots(img, t, speaker, mouth)
-    return img
+    return compose_land(img, t, cur) if LONG else img
+
+LBG = None; DECOR = None
+def land_assets():
+    global LBG, DECOR
+    LBG = Image.new('RGBA', (OUT_W, OUT_H), FLAT + (255,))
+    yy, xx = np.mgrid[0:OUT_H, 0:OUT_W]
+    g = np.exp(-(((xx - 600) / 900) ** 2 + ((yy - 520) / 600) ** 2))
+    vig = np.clip(((xx - OUT_W / 2) / (OUT_W * 0.62)) ** 2 + ((yy - OUT_H / 2) / (OUT_H * 0.7)) ** 2, 0, 1)
+    arr = np.zeros((OUT_H, OUT_W, 4)); arr[..., 0] = 120; arr[..., 1] = 90; arr[..., 2] = 255
+    arr[..., 3] = g * 34
+    dk = vig * 110; arr[..., :3] = arr[..., :3] * (arr[..., 3:4] / (arr[..., 3:4] + dk[..., None] + 1e-6))
+    arr[..., 3] = arr[..., 3] + dk
+    DECOR = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), 'RGBA'); dd = ImageDraw.Draw(DECOR)
+    for x in range(0, OUT_W, 60): dd.line((x, 0, x, OUT_H), fill=(255, 255, 255, 7))
+    for y in range(0, OUT_H, 60): dd.line((0, y, OUT_W, y), fill=(255, 255, 255, 7))
+    dd.line((1130, 150, 1130, 1010), fill=(255, 255, 255, 22), width=2)
+
+def compose_land(p, t, cur):
+    out = LBG.copy()
+    out.paste(p.crop((0, 70, 1080, 215)).resize((756, 101), Image.LANCZOS), (582, 6))
+    out.paste(p.crop((0, 240, 1080, 1110)), (30, 165))
+    out.paste(p.crop((0, 1095, 1080, 1445)).resize((734, 238), Image.LANCZOS), (1160, 330))
+    out.paste(p.crop((0, 1640, 1080, 2050)).resize((734, 279), Image.LANCZOS), (1160, 640))
+    out.alpha_composite(DECOR); d = ImageDraw.Draw(out, 'RGBA')
+    chap = [c for c in CHAPTERS if c[0] <= t][-1][1] if CHAPTERS else ''
+    acc = FORMATS.get(EP.get('format', 'long'), FORMATS['long'])[1]
+    put_text(out, (1527, 190), chap.upper(), fit_font('Inter-Bold.otf', 30, chap.upper(), 700), acc, eo(prog(t, 0.3, 0.8)))
+    w = 700 * clamp(t / T_END); d.rounded_rectangle((1177, 240, 1877, 246), 3, fill=(255, 255, 255, 40))
+    d.rounded_rectangle((1177, 240, 1177 + w, 246), 3, fill=acc + (220,))
+    for c0, _ in CHAPTERS[1:]:
+        x = 1177 + 700 * clamp(c0 / T_END); d.ellipse((x - 5, 238, x + 5, 248), fill=(255, 255, 255, 180))
+    return out.convert('RGB')
+
+def make_thumb():
+    """1280x720 thumbnail: big short text left (episode "thumb_text", else the title), the three hosts right, Σ badge."""
+    import re
+    Wt, Ht = 1280, 720; acc = FORMATS.get(EP.get('format', 'long'), FORMATS['long'])[1]
+    yy, xx = np.mgrid[0:Ht, 0:Wt]
+    arr = np.array(FLAT, float) * np.ones((Ht, Wt, 1)) + np.exp(-(((xx - 980) / 420) ** 2 + ((yy - 420) / 320) ** 2))[..., None] * np.array([60, 40, 110])
+    img = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)).convert('RGBA'); d = ImageDraw.Draw(img, 'RGBA')
+    for i, spk in enumerate(['REGINALD', 'VEDA', 'TARA']):
+        L = robot_layer(spk, 0.5 if spk == 'TARA' else 0.0, False, 1.0 + i, True, 0.0)
+        sc = 0.78 if spk == 'VEDA' else 0.66; L = L.resize((int(420 * sc), int(520 * sc)), Image.BICUBIC)
+        x = [830, 990, 1150][i]; img.alpha_composite(L, (int(x - L.width / 2), int(690 - L.height)))
+    text = EP.get('thumb_text') or re.sub(r'[^\w\s,.?!%₹-]', '', EP.get('title', EP['hook']['text'])).strip()
+    words = text.split()
+    for size in (120, 108, 96, 84, 72):
+        f = F('InterDisplay-Black.otf', size); ls = wrap(words, f, 680)
+        if len(ls) <= 4: break
+    y = 360 - len(ls) * size * 1.05 / 2 + size * 0.5
+    for k, ln in enumerate(ls[:4]):
+        s = ' '.join(ln); col = acc if any(ch.isdigit() for ch in s) or (k == 0 and not any(any(c.isdigit() for c in ' '.join(x)) for x in ls)) else (255, 255, 255)
+        for dx, dy in ((4, 5), (0, 0)):
+            put_text(img, (60 + dx, y + k * size * 1.05 + dy), s, f, (0, 0, 0) if dx else col, 0.55 if dx else 1, 'lm')
+    d.rounded_rectangle((60, 34, 60 + F('Inter-Bold.otf', 30).getlength('INDIA IN NUMBERS') + 40, 84), 25, fill=acc + (255,))
+    put_text(img, (80, 59), 'INDIA IN NUMBERS', F('Inter-Bold.otf', 30), (20, 14, 30), 1, 'lm')
+    glow_text(img, (1190, 95), SGLYPH, F('InterDisplay-Black.otf', 110), SCOL, 1.0, 1.0, 14)
+    return img.convert('RGB')
 
 def slug():
     return f"ep{int(EP.get('ep', 1)):02d}_{EP.get('slug', 'episode')}"
@@ -630,25 +801,29 @@ DESCRIPTION
 {src}
 {tags}
 
-HOOK LINE (for your recording)
+HOOK LINE
 "{EP['hook']['text']}"
-"""
+""" + (('\nCHAPTERS\n' + '\n'.join(f"{int(c // 60)}:{int(c % 60):02d} {n}" for c, n in CHAPTERS) + '\n') if LONG else '')
     for f in glob.glob(os.path.join(EP_DIR, 'out', '*_upload.txt')): os.remove(f)
     open(os.path.join(EP_DIR, 'out', f"{stamp}_{slug()}_upload.txt"), 'w').write(txt)
 
 def main():
     global BG
     ep_dir = sys.argv[1]; load(ep_dir); build_lines(); BG = make_bg()
+    if LONG: land_assets()
     if '--preview' in sys.argv:
         ts = [float(x) for x in sys.argv[sys.argv.index('--preview') + 1].split(',')]
-        tiles = [frame(int(tt * FPS)).resize((360, 640), Image.LANCZOS) for tt in ts]
-        sheet = Image.new('RGB', (360 * len(tiles), 640))
-        for k, tl in enumerate(tiles): sheet.paste(tl, (360 * k, 0))
+        tw, th = (640, 360) if LONG else (360, 640); cols = 3 if LONG else len(ts); rows = (len(ts) + cols - 1) // cols
+        tiles = [frame(int(tt * FPS)).resize((tw, th), Image.LANCZOS) for tt in ts]
+        sheet = Image.new('RGB', (tw * cols, th * rows))
+        for k, tl in enumerate(tiles): sheet.paste(tl, (tw * (k % cols), th * (k // cols)))
         sheet.save(os.path.join(EP_DIR, 'work', 'preview.jpg'), quality=88)
         print('T_END', round(T_END, 2), 'starts', [round(L['start'], 2) for L in LINES]); return
+    if '--dry' in sys.argv: print('T_END', round(T_END, 1), 'chapters', CHAPTERS); return
+    if '--thumb' in sys.argv: make_thumb().save(wpath('thumb.jpg'), quality=92); print('thumb', wpath('thumb.jpg')); return
     build_audio()
     vid = wpath('video.mp4')
-    p = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', str(FPS), '-i', '-',
+    p = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{OUT_W}x{OUT_H}', '-r', str(FPS), '-i', '-',
                           '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', vid], stdin=subprocess.PIPE)
     NF = int(T_END * FPS)
     for i in range(NF):
@@ -658,6 +833,10 @@ def main():
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', vid, '-i', wpath('mix.wav'), '-map', '0:v', '-map', '1:a', '-c:v', 'copy',
                     '-c:a', 'aac', '-b:a', '160k', '-ar', '48000', '-shortest', tmp], check=True)
     os.replace(tmp, out); write_upload_txt(stamp)
+    for f in glob.glob(os.path.join(EP_DIR, 'out', '*_chapters.json')) + glob.glob(os.path.join(EP_DIR, 'out', '*_thumb.jpg')): os.remove(f)
+    if LONG:
+        json.dump([[round(c, 1), n] for c, n in CHAPTERS], open(os.path.join(EP_DIR, 'out', f"{stamp}_{slug()}_chapters.json"), 'w'))
+        make_thumb().save(os.path.join(EP_DIR, 'out', f"{stamp}_{slug()}_thumb.jpg"), quality=92)
     print('DONE', out, round(T_END, 1), 's')
 
 if __name__ == '__main__':

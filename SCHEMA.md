@@ -9,10 +9,14 @@ One folder per episode: `episodes/epNN_<slug>/episode.json`. See ep01–ep03 for
   "topic": "One-line question the episode answers",
   "hook": {
     "text": "Is Bangalore traffic really the worst in India?",   // the opening question (shown on screen, spoken by VEDA or the narrator)
-    "lines": ["Is Bangalore", "traffic really", "the worst", "in India?"]  // optional manual line breaks (≤ 5 lines)
+    "lines": ["Is Bangalore", "traffic really", "the worst", "in India?"],  // optional manual line breaks (≤ 5 lines)
+    "clip": "q25",                 // optional: SIGMA asks it with this voice-bank clip (text must match the clip exactly)
+    "intro": "i01"                 // optional: SIGMA's opener before the question ("Sigma here. Question for the panel.")
   },
+  "format": "myth",                // classic | myth | versus | then-now | ranking | guess | viewer | tracker (RUNBOOK step 3); "long" for long-form
   "welcome": true,                 // VEDA / REGINALD / TARA intros (keep true)
   "lines": [ LINE, LINE, ... ],    // 4–5 lines after the welcome
+  "last_word": {"react": "r08", "close": "s03"},   // SIGMA's closing card "THE LAST WORD" (voice-bank clips; skipped if missing)
   "title": "YouTube title, ≤ 70 chars, 1 emoji max",
   "description": "2–3 sentences + a question for comments",
   "hashtags": ["#IndianRailways", "#VandeBharat", "#India"],   // 3–5, most important first; #Shorts + #IndiaInNumbers are added automatically
@@ -27,10 +31,29 @@ One folder per episode: `episodes/epNN_<slug>/episode.json`. See ep01–ep03 for
 `github` (written by publish_github.py) and `upload` (written by the YouTube uploader: video id, slot, go-live time, 48-hour views)
 are filled in automatically. Never edit them by hand.
 
+## Long-form (16:9) — see LONGFORM.md and episodes/_examples/longform.json
+```jsonc
+{
+  "kind": "long", "format": "long",
+  "hook": {"text": "How does Indian Railways keep the whole country moving?", "clip": "L04"},
+  "sigma_intro": "x01",                       // SIGMA: "Grab a chai. This one's the long version."
+  "chapters": [
+    {"title": "Two crore people a day", "lines": [ LINE, ... ]},
+    {"title": "The fastest trains", "bridge": "x03", "host": "TARA", "lines": [ ... ]}   // bridge = SIGMA clip before the chapter card; host = who announces it
+  ],
+  "lines": [ CTA LINE ],                       // after the chapters
+  "last_word": {"react": "r04", "close": "x05"},
+  "thumb_text": "2 CRORE people a day",        // big text on the thumbnail
+  "title": "...", "description": "...", "hashtags": [...], "youtube": {"tags": [...]}, "sources": [...]
+}
+```
+A SIGMA line can also go anywhere in `lines`: `{"spk": "SIGMA", "clips": ["r02"], "visual": {"type": "sigma", "kicker": "WAIT FOR IT"}}`
+(no `say`; the caption is the clip text). Visual types `sigma` and `chapter` are used by SIGMA lines and chapter cards.
+
 ## LINE
 ```jsonc
 {
-  "spk": "VEDA" | "REGINALD" | "TARA",
+  "spk": "VEDA" | "REGINALD" | "TARA" | "SIGMA",   // SIGMA uses "clips" instead of "say"
   "say": "What the voice speaks. Spell out years and tricky numbers: 'twenty twenty-five', 'seven hundred and forty one crore'.",
   "cap": "On-screen caption, same meaning, with digits: '741 CRORE passengers'. CAPS for 1–2 punch words.",
   "visual": VISUAL

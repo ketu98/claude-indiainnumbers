@@ -7,7 +7,7 @@ Each run, for every episode in episodes/*/episode.json:
      auto-checks (9:16, length, title/description/hashtag limits, a sourced URL). Fails -> `needs-fix` + comment, nothing posted.
      Passes -> upload as PRIVATE scheduled to go public at the best slot >= grace_hours from now (`scheduled` label),
      or PUBLIC right away for eps listed in channel/youtube.json "publish_now_eps".
-  2. SCHEDULED: if Aniket labelled the issue `skipped`/`needs-fix` before it went live -> publish is cancelled (stays private).
+  2. SCHEDULED: if the owner labelled the issue `skipped`/`needs-fix` before it went live -> publish is cancelled (stays private).
      If YouTube has made it public -> `uploaded` label + comment with the link.
   3. LIVE for 48 h: records the view count, which is how the best posting slots are learned.
 Then rebuilds TRACKER.md / TRACKER.csv and commits + pushes. Safe to re-run: the YouTube video id is stored in episode.json
@@ -57,7 +57,7 @@ def comment(issue, body):
 
 def ensure_labels():
     have = {l['name'] for l in gh(f'{R}/labels?per_page=100')}
-    for name, color, desc in [('scheduled', '1d76db', 'Uploaded to YouTube, goes public at the scheduled time'),
+    for name, color, desc in [('long-form', 'fbca04', '16:9 long-form episode'), ('scheduled', '1d76db', 'Uploaded to YouTube, goes public at the scheduled time'),
                               ('upload-failed', 'b60205', 'The YouTube upload failed: see the comment')]:
         if name not in have and not DRY:
             gh('-X', 'POST', f'{R}/labels', '-f', f'name={name}', '-f', f'color={color}', '-f', f'description={desc}', check=False)
@@ -86,6 +86,20 @@ def norm_tag(h):
     return f'#{h}' if h else ''
 
 
+def is_long(E): return E.get('kind') == 'long' or bool(E.get('chapters')) or (E.get('github') or {}).get('kind') == 'long'
+
+
+def chapter_lines(E):
+    """YouTube chapters: first at 0:00, at least 3, each at least 10 s long. Shorter ones are merged into the previous one."""
+    ch = (E.get('github') or {}).get('chapters') or []
+    out = []
+    for t, name in ch:
+        t = 0 if not out else int(t)
+        if out and t - out[-1][0] < 10: continue
+        out.append((t, name))
+    return [f'{t // 60}:{t % 60:02d} {n}' for t, n in out] if len(out) >= 3 else []
+
+
 def metadata(E):
     """Title / description / tags for YouTube. Uses the episode's "youtube" block when the research task wrote one,
     otherwise builds it from title / description / hashtags / sources."""
@@ -97,13 +111,15 @@ def metadata(E):
         if h and h.lower() not in [t.lower() for t in tags_h]: tags_h.append(h)
     topic = [h for h in tags_h if h.lower() not in ('#shorts', '#indiainnumbers')]
     topic += [b for b in CFG.get('broad_hashtags', []) if b.lower() not in [t.lower() for t in topic]]
-    shown = topic[:3] + ['#Shorts']          # YouTube shows the first 3 hashtags above the title
+    shown = topic[:3] + ([] if is_long(E) else ['#Shorts'])          # YouTube shows the first 3 hashtags above the title
+    tags_h = [h for h in tags_h if not (is_long(E) and h.lower() == '#shorts')]
     rest = [h for h in tags_h if h not in shown] + ([] if '#IndiaInNumbers' in tags_h else ['#IndiaInNumbers'])
     hashtags = (shown + rest)[:8]
     body = clean(y.get('description') or E.get('description', ''))
     src = '\n'.join(f"• {clean(s['name'])}: {s['url']}" for s in E.get('sources', []) if s.get('url'))
     hook = clean(E.get('hook', {}).get('text', ''))
-    parts = [(hook + '\n') if hook and hook not in body else '', body, '',
+    chap = chapter_lines(E)
+    parts = [(hook + '\n') if hook and hook not in body else '', body, '', *((['⏱ Chapters', *chap, '']) if chap else []),
              '📊 Sources', src, '', CFG['channel_line'], '', ' '.join(hashtags)]
     description = re.sub(r'\n{3,}', '\n\n', '\n'.join(parts)).strip()
     tags, total = [], 0
@@ -125,8 +141,12 @@ def checks(E, path, M):
     bad = []
     if not path or not os.path.exists(path): return [f'video file not found: {path}']
     w, h, d = probe(path)
-    if not (w and h and h > w and abs(w / h - 9 / 16) < 0.02): bad.append(f'not 9:16 vertical ({w}x{h})')
-    lo, hi = CFG['duration_s']
+    if is_long(E):
+        if not (w and h and w > h and abs(w / h - 16 / 9) < 0.02): bad.append(f'long-form is not 16:9 ({w}x{h})')
+        lo, hi = CFG.get('long_duration_s', [120, 1200])
+    else:
+        if not (w and h and h > w and abs(w / h - 9 / 16) < 0.02): bad.append(f'not 9:16 vertical ({w}x{h})')
+        lo, hi = CFG['duration_s']
     if not lo <= d <= hi: bad.append(f'length {d:.1f}s is outside {lo}-{hi}s')
     if not M['title']: bad.append('empty title')
     if len(M['description'].encode()) > 4900: bad.append('description too long')
@@ -234,7 +254,7 @@ def restore_from_issue(E):
             d = json.loads(m.group(1))
             if d.get('video_id') not in (E.get('upload') or {}).get('replaced', []): last = d
     if not last: return False
-    u = E.setdefault('upload', {}); u.update(last, url=f"https://youtube.com/shorts/{last['video_id']}", error=None)
+    u = E.setdefault('upload', {}); u.update(last, url=(f"https://www.youtube.com/watch?v={last['video_id']}" if is_long(E) else f"https://youtube.com/shorts/{last['video_id']}"), error=None)
     return True
 
 
@@ -262,7 +282,7 @@ def handle_new(yt, eps, epj, E, labels):
         comment(issue, f"🤖 **YouTube upload failed** (attempt {u['attempts']}/{CFG['max_attempts']}): `{str(e)[:300]}`\n"
                        + ('I will retry on the next hourly run.' if u['attempts'] < CFG['max_attempts'] else 'Giving up: please check the setup.'))
         return True
-    url = f'https://youtube.com/shorts/{vid}'
+    url = f'https://www.youtube.com/watch?v={vid}' if is_long(E) else f'https://youtube.com/shorts/{vid}'
     marker = '<!-- iin-upload ' + json.dumps({'video_id': vid, 'video_file': g.get('video_file'), 'slot': slot,
                                                'publish_at': (when or NOW.astimezone(IST)).isoformat(timespec='minutes')}) + ' -->'
     u.update(video_id=vid, url=url, video_file=g.get('video_file'), slot=slot, slot_mode=mode,
@@ -270,6 +290,11 @@ def handle_new(yt, eps, epj, E, labels):
              title=M['title'], hashtags=M['hashtags'], error=None)
     try: add_to_playlist(yt, vid)
     except Exception as e: log('  playlist add failed (ignored):', e)
+    th = os.path.join(ROOT, g.get('thumb') or '')
+    if g.get('thumb') and os.path.exists(th):
+        from googleapiclient.http import MediaFileUpload
+        try: yt.thumbnails().set(videoId=vid, media_body=MediaFileUpload(th, mimetype='image/jpeg')).execute(); u['thumb'] = True
+        except Exception as e: log('  thumbnail failed (ignored; custom thumbnails need a phone-verified channel):', str(e)[:200])
     st = (video_status(yt, vid) or {}).get('status', {})
     if (now_mode and st.get('privacyStatus') != 'public') or (when and not st.get('publishAt')):
         u['error'] = 'locked-private'
