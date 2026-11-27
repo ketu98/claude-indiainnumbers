@@ -3,6 +3,8 @@
 The owner records one short script a week (about a minute). Plan next week (Sunday to Saturday) and write it.
 
 1. **Setup**: as RUNBOOK step 1 (main repo; the voice bank is needed only for `status`).
+   **First check**: if `channel/sigma_script.json` already has a question dated on the coming Sunday (the week is already planned),
+   stop here: change nothing and send no message.
 2. **Plan 8 questions** for next Sunday to Saturday: 7 daily Short questions (one per day) and 1 long-form question for Saturday.
    - Spread subjects widely (nature, space, sports, food, energy, money facts, culture, cities, transport, digital, tourism, education,
      geography, weather, business…): no category twice in a row, nothing already in `episodes/LOG.md` or already planned in
