@@ -139,5 +139,14 @@
    "name": "Business Standard (Oct 2022 UPI volume)",
    "url": "https://business-standard.com/article/finance/upi-processes-over-7-bn-transactions-in-oct-record-high-since-inception-122110100569_1.html"
   }
- ]
+ ],
+ "github": {
+  "issue": 3,
+  "video": "https://github.com/ketu98/claude-indiainnumbers/blob/main/videos/2026-11/2026-11-27_12-24_ep02_upi-every-second_veda.mp4",
+  "video_file": "2026-11-27_12-24_ep02_upi-every-second_veda.mp4",
+  "path": "videos/2026-11/2026-11-27_12-24_ep02_upi-every-second_veda.mp4",
+  "made": "2026-11-27 12:24",
+  "slot": "Manual",
+  "voice": "VEDA"
+ }
 }
