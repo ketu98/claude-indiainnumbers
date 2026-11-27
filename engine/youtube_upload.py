@@ -120,7 +120,7 @@ def metadata(E):
     hook = clean(E.get('hook', {}).get('text', ''))
     chap = chapter_lines(E)
     parts = [(hook + '\n') if hook and hook not in body else '', body, '', *((['⏱ Chapters', *chap, '']) if chap else []),
-             '📊 Sources', src, '', *([CFG['long_cta_line'], ''] if is_long(E) and CFG.get('long_cta_line') else []), CFG['channel_line'], '', ' '.join(hashtags)]
+             '📊 Sources', src, '', *([CFG['long_cta_line'], ''] if is_long(E) and CFG.get('long_cta_line') else ([CFG['short_cta_line'], ''] if CFG.get('short_cta_line') and not is_long(E) else [])), CFG['channel_line'], '', ' '.join(hashtags)]
     description = re.sub(r'\n{3,}', '\n\n', '\n'.join(parts)).strip()
     tags, total = [], 0
     for t in (y.get('tags') or []) + [h.lstrip('#') for h in hashtags] + CFG['default_tags']:

@@ -611,6 +611,7 @@ def panel_fact(img, d, u, a, L):
 
 def panel_cta(img, d, u, a, L):
     V = L['visual']; p = prog(u, 0.1, 0.45); title = V.get('title', 'Your city?')
+    if not LONG and V.get('support', True) and 'SUBSCRIBE' not in [str(c).upper() for c in V.get('chips', [])]: support_pills(img, d, u, a)
     put_text(img, (540, 400), title, fit_font('InterDisplay-Black.otf', 120, title, 960), (255, 255, 255), a * eo(p), 'mm', back(p) if p < 1 else 1)
     chips = V.get('chips', []); f = F('Inter-Bold.otf', 36); rows, cur, k = [], [], 0
     for c in chips:
@@ -648,6 +649,9 @@ def panel_sigma(img, d, u, a, L):
     j = int(u * FPS); e = float(L['env'][j]) if 0 <= j < len(L['env']) else 0.0
     glow_text(img, (540, 600), SGLYPH, F('InterDisplay-Black.otf', 300), SCOL, a * eo(p), (back(p) if p < 1 else 1) * (1 + 0.06 * e))
     put_text(img, (540, 820), SNAME, F('InterDisplay-Black.otf', 60), (240, 236, 255), a * eo(prog(u, 0.3, 0.6)))
+    if not LONG and V.get('kicker', 'THE LAST WORD') == 'THE LAST WORD':
+        support_pills(img, d, u + 0.6, a)
+        put_text(img, (540, 905), EP.get('follow_line', 'A new question every day. Follow along!'), F('Inter-SemiBold.otf', 34), (200, 196, 235), a * eo(prog(u, 0.8, 1.2)))
     for k in range(3):
         r = 150 + 40 * k + 30 * ((u * 0.8 + k / 3) % 1)
         d.ellipse((540 - r, 600 - r, 540 + r, 600 + r), outline=SCOL + (int(90 * a * (1 - ((u * 0.8 + k / 3) % 1))),), width=3)
@@ -664,6 +668,18 @@ def panel_chapter(img, d, u, a, L):
         put_text(img, (540, 560 + k * size * 1.1), ' '.join(ln), f, (255, 255, 255), a * eo(q), 'mm', back(q) if q < 1 else 1)
     w = 600 * eo(prog(u, 0.3, 0.9)); y = 560 + len(ls[:3]) * size * 1.1 + 10
     d.rounded_rectangle((540 - w / 2, y, 540 + w / 2, y + 8), 4, fill=acc + (int(255 * a),))
+
+def support_pills(img, d, u, a, y=262):
+    """Small LIKE · SHARE · SUBSCRIBE pills that pop in one by one (Shorts closing card + Last Word)."""
+    items = [('LIKE', HI), ('SHARE', (80, 200, 255)), ('SUBSCRIBE', (255, 70, 70))]; f = F('Inter-Bold.otf', 30)
+    ws = [f.getlength(t) + 48 for t, _ in items]; x = 540 - (sum(ws) + 16 * (len(ws) - 1)) / 2
+    for k, ((t, col), w) in enumerate(zip(items, ws)):
+        q = prog(u, 0.6 + 0.18 * k, 0.9 + 0.18 * k)
+        if q > 0:
+            sc = back(q) * (1 + (0.06 * math.sin(u * 6) if t == 'SUBSCRIBE' and q >= 1 else 0)); cx = x + w / 2
+            d.rounded_rectangle((cx - w * sc / 2, y - 26 * sc, cx + w * sc / 2, y + 26 * sc), int(26 * sc), fill=col + (int(255 * a),))
+            put_text(img, (cx, y), t, f, (255, 255, 255) if t != 'LIKE' else (20, 14, 30), a, 'mm', sc)
+        x += w + 16
 
 PANELS = {'welcome': panel_welcome, 'sigma': panel_sigma, 'chapter': panel_chapter, 'bars': panel_bars, 'bigstat': panel_bigstat, 'vs': panel_vs,
           'gauge': panel_gauge, 'fact': panel_fact, 'cta': panel_cta, 'none': lambda *a: None}

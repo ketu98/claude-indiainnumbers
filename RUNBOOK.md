@@ -80,6 +80,11 @@ YouTube refuses to pay channels whose videos look template-made with little vari
    - **Hook**: with a SIGMA question: `"hook": {"text": "<the clip's exact text>", "clip": "qNN", "intro": "i01"}` (alternate `i01`/`i02`,
      or leave `intro` out sometimes). Without one: a curiosity question of 10 words or fewer.
    - Then 4–5 host lines, the last one a `cta`. Each `say` about 25 words max, each `cap` about 20 words max.
+   - **The `cta` line asks for support in one quick, warm beat**: the comment question, then 3–7 words of nudge, different every day
+     and matching the topic, e.g. "…Tell us below, and follow for tomorrow's number!", "…Like it if that surprised you!",
+     "…Share this with your chai buddy!". Never pushy, never more than one sentence of it. (LIKE · SHARE · SUBSCRIBE pills appear on
+     screen automatically on the closing card and the Last Word.) Optional `"follow_line"` changes the small text under SIGMA's Last Word
+     (default "A new question every day. Follow along!").
    - **The Last Word**: `"last_word": {"react": "rNN", "close": "sNN"}`, using clips that exist in the bank (`voice_bank.py status`;
      each clip's tone is in `bank.json`). Pick the reaction whose tone fits the result (`wow` surprising · `ouch` a bad number ·
      `proud` India does well · `fun` only if it truly matches what happened in this script · `calm` neutral). Avoid the react/close
