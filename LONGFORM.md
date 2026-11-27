@@ -4,7 +4,8 @@ The long-form "deep dive" answers one bigger question in 4–6 chapters. It buil
 since Shorts-feed watch time doesn't count toward it) and shows the depth that YouTube's reviewers look for. Same cast, same rules
 (RUNBOOK.md: cast, off-limits, sourcing, anonymity of SIGMA). Follow RUNBOOK steps 1 (setup, voice bank) and 4 (research) and the steps below.
 
-1. **Topic**: a SIGMA long-form question (`channel/sigma_script.json` section L, ids `L01`…, with a clip in the bank, not yet in the LOG `Q` column),
+1. **Topic**: first an open Issue labelled `idea` marked "Long-form" (oldest, or one dated this week; then comment the episode Issue link
+   on it and close it), else a SIGMA long-form question (`channel/sigma_script.json` section L, ids `L01`…, with a clip in the bank, not yet in the LOG `Q` column),
    else a request marked `long:` in `topics/requests.md`, else your own broad question. Prefer subjects the recent Shorts did well on
    (TRACKER.md "Views 48h" column) and expand them.
 

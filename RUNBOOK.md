@@ -36,7 +36,12 @@ YouTube refuses to pay channels whose videos look template-made with little vari
      - Clips are private: never copy them into this repo, never send them anywhere.
 
 2. **Pick the topic** (go wide: space, nature, sports, food, energy, money facts, culture, cities, transport, digital, tourism, education, geography, records…)
-   - `topics/requests.md` first: if the owner left a request, do the top one and delete it from the list.
+   - **Owner's ideas first**: open Issues labelled `idea` (`gh api "repos/ketu98/claude-indiainnumbers/issues?labels=idea&state=open"`).
+     Skip ones marked "Long-form" (those are for LONGFORM.md) and ones whose "Make it on" date is in the future; if one is dated today, do that one,
+     else the oldest. Follow its question, format and angle: the owner's angle and lines are the heart of the episode (keep the facts sourced;
+     if a number they gave can't be verified, use the verified figure and say so in your message). Then comment on the idea Issue with the
+     episode Issue link and close it.
+   - Then `topics/requests.md`: if the owner left a request, do the top one and delete it from the list.
    - Otherwise **prefer a recorded SIGMA question** (`channel/sigma_script.json` sections A/B, kind `question`) that has a clip in the bank and
      isn't in the `Q` column of `episodes/LOG.md`. The question is the hook, word for word.
    - Else pick from `topics/backlog.md`, or a timely angle (fresh official data this week).

@@ -1,0 +1,50 @@
+name: 💡 Episode idea
+description: Pitch an episode. The next daily (or weekly long-form) run makes it first.
+title: "Idea: "
+labels: ["idea"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: The question
+      description: The one question the episode answers (10 words or fewer works best).
+      placeholder: How many cups of chai does Bengaluru drink a day?
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Short or long-form?
+      options:
+        - Short (daily)
+        - Long-form (weekly deep dive)
+    validations:
+      required: true
+  - type: dropdown
+    id: format
+    attributes:
+      label: Format
+      options:
+        - Let Claude pick
+        - Classic (THE PANEL)
+        - Myth or Fact
+        - India vs the World
+        - Then vs Now
+        - The Ranking
+        - Guess the Number
+        - You Asked (a viewer's question)
+        - The Tracker (this month's numbers)
+  - type: textarea
+    id: angle
+    attributes:
+      label: Your angle (optional)
+      description: The surprise, comparison, joke or opinion you want in it. A line you want a host or SIGMA's Last Word to land on. Anything you already know.
+  - type: textarea
+    id: sources
+    attributes:
+      label: Numbers or links you already have (optional)
+  - type: input
+    id: when
+    attributes:
+      label: Make it on (optional)
+      description: A date (YYYY-MM-DD) if it should come out on a particular day, e.g. tied to an event. Leave empty for "next run".
