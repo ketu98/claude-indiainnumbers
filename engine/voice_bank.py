@@ -32,6 +32,14 @@ CHAIN = ','.join([
 SCRIPTS_DIR = os.path.join(ROOT, 'sigma-scripts')
 
 
+KINDS = {'q': 'question', 'L': 'question_long', 'i': 'intro', 'r': 'reaction', 's': 'signoff', 'x': 'long_line'}
+WHAT = {'q': 'daily Short', 'L': 'weekly long-form', 'i': 'opener', 'r': 'reaction', 's': 'sign-off', 'x': 'long-form line'}
+
+
+def line_parts(l):
+    cid, text, tone = l[:3]; return cid, text, tone, (l[3] if len(l) > 3 else None)
+
+
 def section_of(name):
     """'Script_01', 'script 1', '01', 'Script_01_whatever.m4a' -> 'Script_01' (or None)."""
     m = re.match(r'\s*(?:script)?[\s_-]*0*(\d{1,3})(?!\d)', os.path.basename(name), re.I)
@@ -52,9 +60,12 @@ def write_scripts():
         n = len(sec['lines'])
         out = [f"# {key.replace('_', ' ')} · {sec['title']}", '',
                f"Save your recording as **{key}** (e.g. `{key}.m4a`). {n} lines, about {max(1, round(n * 4.5 / 60))}–{max(2, round(n * 6 / 60))} minutes.",
-               'Read in order. Pause about 2 seconds after each line. Do not read the numbers.', '']
-        for i, (cid, text, tone) in enumerate(sec['lines'], 1):
-            out += [f'{i:02d}. {text}', '']
+               'Read in order. Pause about 2 seconds after each line. Say only the sentences: skip the numbers and the small grey notes under each line.', '']
+        import datetime as _dt
+        for i, l in enumerate(sec['lines'], 1):
+            cid, text, tone, date = line_parts(l)
+            when = _dt.date.fromisoformat(date).strftime('%a %d %b') + ' · ' if date else ''
+            out += [f'**{i:02d}.** {text}  ', f"<sub>{when}{WHAT.get(cid[0], '')}</sub>", '']
         out += ['---', f"<sub>clip ids in order: {' '.join(l[0] for l in sec['lines'])}</sub>", '']
         open(path, 'w', encoding='utf-8').write('\n'.join(out))
     print('scripts written to', SCRIPTS_DIR)
@@ -124,12 +135,13 @@ def split(rec, section, bank, start=None):
     os.makedirs(os.path.join(bank, 'clips'), exist_ok=True)
     y = clean_all(x, segs, os.path.join(bank, '.tmp'))
     bj = os.path.join(bank, 'bank.json'); B = json.load(open(bj, encoding='utf-8')) if os.path.exists(bj) else {}
-    for (cid, text, tone), (a, b) in zip(lines, segs):
+    for l, (a, b) in zip(lines, segs):
+        cid, text, tone, date = line_parts(l)
         c = y[a:b].copy(); f = int(0.03 * SR); c[:f] *= np.linspace(0, 1, f); c[-f:] *= np.linspace(1, 0, f)
         wav = os.path.join(bank, 'clips', cid + '.wav'); sf.write(wav, c, SR)
         out = os.path.join(bank, 'clips', cid + '.m4a')
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wav, '-c:a', 'aac', '-b:a', '96k', out], check=True); os.remove(wav)
-        B[cid] = dict(text=text, kind=sec['kind'], tone=tone, file=f'clips/{cid}.m4a', secs=round((b - a) / SR, 2))
+        B[cid] = dict(text=text, kind=KINDS.get(cid[0], 'other'), tone=tone, date=date, file=f'clips/{cid}.m4a', secs=round((b - a) / SR, 2))
         print(f'  {cid}  {(b - a) / SR:4.1f}s  {text}')
     json.dump(dict(sorted(B.items())), open(bj, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(f'{section}: {len(lines)} clips saved to {bank}/clips')

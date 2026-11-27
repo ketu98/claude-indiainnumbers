@@ -33,8 +33,8 @@ YouTube refuses to pay channels whose videos look template-made with little vari
        line, tell the owner exactly which recording and what to redo. Then commit and push both repos:
        `cd ~/iin-voice-bank && git add -A && git commit -m "Process recordings" && git push`, and in this repo
        `git add -A sigma-scripts && git commit -m "SIGMA: recordings processed" && git push`.
-     - `python3 engine/voice_bank.py status` shows which clips exist. New recording batches: add a section `Script_NN` (new ids) to
-       `channel/sigma_script.json` and run `python3 engine/voice_bank.py scripts` to write its file into `sigma-scripts/`.
+     - `python3 engine/voice_bank.py status` shows which clips exist. Weekly scripts are written by the Friday "SIGMA weekly script" task
+       (see WEEKLY_SCRIPT.md).
      - If the bank repo can't be attached or is empty, carry on without SIGMA (VEDA asks the hook, no Last Word) and mention it in your message.
      - Clips are private: never copy them into this repo, never send them anywhere.
 
@@ -45,8 +45,10 @@ YouTube refuses to pay channels whose videos look template-made with little vari
      if a number they gave can't be verified, use the verified figure and say so in your message). Then comment on the idea Issue with the
      episode Issue link and close it.
    - Then `topics/requests.md`: if the owner left a request, do the top one and delete it from the list.
-   - Otherwise **prefer a recorded SIGMA question** (`channel/sigma_script.json` Script_01 / Script_02, kind `question`) that has a clip in the bank and
-     isn't in the `Q` column of `episodes/LOG.md`. The question is the hook, word for word.
+   - Otherwise **today's planned question**: the `q` line in `channel/sigma_script.json` whose date is today (IST). That question is the
+     hook, word for word, with its clip id (`"clip": "qNN"`) if it's in the voice bank; if not recorded yet, VEDA asks the same question.
+     If the research can't find 3 solid numbers for it, pick another topic and say so in your message.
+   - No plan for today? An older planned `q` question not yet in the LOG `Q` column (recorded ones first).
    - Else pick from `topics/backlog.md`, or a timely angle (fresh official data this week).
    - Never repeat a topic in `episodes/LOG.md`, and don't use the same category as either of the last 2 episodes.
    - **Off-limits**: religion, caste, communities, politics, elections, parties or politicians, crime by group, health or medical advice,
@@ -78,10 +80,10 @@ YouTube refuses to pay channels whose videos look template-made with little vari
    - **Hook**: with a SIGMA question: `"hook": {"text": "<the clip's exact text>", "clip": "qNN", "intro": "i01"}` (alternate `i01`/`i02`,
      or leave `intro` out sometimes). Without one: a curiosity question of 10 words or fewer.
    - Then 4–5 host lines, the last one a `cta`. Each `say` about 25 words max, each `cap` about 20 words max.
-   - **The Last Word**: `"last_word": {"react": "rNN", "close": "sNN"}`. Pick the reaction whose tone fits the result
-     (`wow` surprising · `ouch` a bad number · `proud` India does well · `fun` teases a host who was right/wrong in this script · `calm` neutral);
-     the fun ones must match what happened (e.g. `r12` "Tara called it" only if Tara predicted it). Don't reuse a react or close used in
-     the last 3 episodes (see LOG). Total length target: 40–55 s.
+   - **The Last Word**: `"last_word": {"react": "rNN", "close": "sNN"}`, using clips that exist in the bank (`voice_bank.py status`;
+     each clip's tone is in `bank.json`). Pick the reaction whose tone fits the result (`wow` surprising · `ouch` a bad number ·
+     `proud` India does well · `fun` only if it truly matches what happened in this script · `calm` neutral). Avoid the react/close
+     used in the last 2 episodes when there's a choice (see LOG). Total length target: 40–55 s.
    - Use a different visual type on consecutive lines. Give every number a visual.
    - Spell out years and big numbers in `say` ("twenty twenty-six", "seven hundred and forty one crore"); use digits in `cap`.
    - Title: ≤ 70 chars, punchy, at most 1 emoji, with the main search words (e.g. "UPI", "Indian Railways", "tigers") in the first 40 chars.

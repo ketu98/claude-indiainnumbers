@@ -2,7 +2,7 @@
 
 This repo makes YouTube Shorts for **India in Numbers** (@IndiaInNumbersPanel).
 
-- To make the daily Short, follow **RUNBOOK.md** step by step. Weekly long-form (16:9): **LONGFORM.md**.
+- To make the daily Short, follow **RUNBOOK.md** step by step. Weekly long-form (16:9): **LONGFORM.md**. Friday: next week's SIGMA script, **WEEKLY_SCRIPT.md**.
 - **SIGMA (Σ)** is the anonymous narrator: pre-recorded clips in the PRIVATE repo `ketu98/iin-voice-bank` (`engine/voice_bank.py`,
   scripts to read in `sigma-scripts/` (generated from `channel/sigma_script.json`; renamed `Completed_…` once recorded)). Never name or hint at the person behind SIGMA, never write the
   owner's name in this public repo, never copy voice clips into it.
