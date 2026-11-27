@@ -4,8 +4,8 @@
 # Run it again with another -Dest to move the synced copy; the background task then follows the new folder.
 # After that it syncs at every log-in and every 30 minutes whenever you are online. Nothing else to do.
 #
-# The synced folder is a MIRROR of GitHub: anything you change inside it is overwritten on the next sync.
-# Copy a video somewhere else before editing it.
+# The synced folder is a MIRROR of GitHub: files that come from GitHub are reset on every sync, so copy a video
+# somewhere else before editing it. Your own extra files in the folder are left alone.
 
 param([string]$Dest = '')
 $ErrorActionPreference = 'Stop'
@@ -14,8 +14,9 @@ if (-not $Dest) {
     if (Test-Path 'D:\') { $Dest = 'D:\India in Numbers' }
     else { $Dest = Join-Path ([Environment]::GetFolderPath('Desktop')) 'India in Numbers' }
 }
-$parent = Split-Path -Parent $Dest
-if (-not (Test-Path -LiteralPath $parent)) { throw "The drive or folder '$parent' does not exist. Pick another -Dest." }
+$drive = [System.IO.Path]::GetPathRoot($Dest)
+if (-not (Test-Path -LiteralPath $drive)) { throw "The drive '$drive' does not exist. Pick another -Dest." }
+New-Item -ItemType Directory -Force -Path (Split-Path -Parent $Dest) | Out-Null
 $Home2  = Join-Path $env:LOCALAPPDATA 'IndiaInNumbers'
 $Sync   = Join-Path $Home2 'sync.ps1'
 $Log    = Join-Path $Home2 'sync.log'
@@ -31,7 +32,17 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 # 2. First copy
 if (-not (Test-Path (Join-Path $Dest '.git'))) {
     Write-Host "Downloading the channel to $Dest ..."
-    git clone $Repo "$Dest"
+    $hasFiles = (Test-Path -LiteralPath $Dest) -and @(Get-ChildItem -LiteralPath $Dest -Force -ErrorAction SilentlyContinue).Count -gt 0
+    if (-not $hasFiles) {
+        git clone $Repo "$Dest"
+    } else {
+        # Folder already has your own files: set up in place and leave them alone (they are never deleted by the sync).
+        git -C "$Dest" init --quiet
+        git -C "$Dest" remote add origin $Repo
+        git -C "$Dest" fetch --quiet origin main
+        git -C "$Dest" checkout --quiet -f -B main --track origin/main
+    }
+    if (-not (Test-Path (Join-Path $Dest '.git'))) { throw "Download failed. Check your internet connection and run this again." }
 }
 
 # 3. The sync script that runs in the background
