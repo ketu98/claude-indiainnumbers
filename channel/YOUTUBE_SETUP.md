@@ -50,7 +50,7 @@ https://github.com/ketu98/claude-indiainnumbers/settings/secrets/actions → **N
    Open the run's log: it shows the title, tags and description it would post for each episode, and changes nothing.
 2. Run it again **without** Dry run. Eps 01–03 go public straight away (they're listed in `publish_now_eps`). Their Issues get a
    comment with the YouTube link and the `uploaded` label, and TRACKER.md updates.
-3. Check one of them in YouTube Studio: it should be **Public**, made for kids = **No**, and "Altered content" = **Yes**.
+3. Check one of them in YouTube Studio: it should be **Public**, made for kids = **No**, and "Altered content" = **No**.
 
 From then on it's hands-off: each new episode is uploaded as private and goes public in a posting slot at least 3 hours later.
 To stop one, label its Issue `skipped` before then.
