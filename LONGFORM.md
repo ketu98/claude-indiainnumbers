@@ -19,7 +19,15 @@ since Shorts-feed watch time doesn't count toward it) and shows the depth that Y
      where the story turns. Chapter titles ≤ 40 chars, curiosity-driven ("The trains nobody sees", not "Freight").
    - Lines: same rules as Shorts (≤ 25 words `say`, ≤ 20 words `cap`, a visual for every number, no two identical visuals in a row),
      rotating speakers naturally, with the hosts reacting to each other between numbers. Target **5–8 minutes** in total (about 45–70 lines).
-   - Top-level `lines`: just the closing `cta` line. `"last_word": {"react": "rNN", "close": "x05"}` (or `x06`).
+   - **Ask for support, warmly** (vary the wording every week; grateful and friendly, never pushy, never guilt-trippy):
+     - **Mid-video nudge**: at the end of chapter 1 or 2, one host line (≤ 18 words), e.g. TARA: "If you're enjoying this, a quick like
+       really helps a small channel like ours. Thank you!"
+       with `{"type": "cta", "title": "Enjoying it?", "chips": ["Tap LIKE"], "button": "LIKE"}`.
+     - **Closing**: top-level `lines` = (1) a host asks the comment question (`cta` visual with answer chips), then (2) a warm
+       like / share / subscribe line from a different host, e.g. VEDA: "Thank you for spending these minutes with us. If you learned
+       something, like it, share it with a friend who'd love these numbers, and subscribe so you don't miss next week's deep dive."
+       with `{"type": "cta", "title": "Thank you!", "chips": ["LIKE", "SHARE", "SUBSCRIBE"], "button": "SUBSCRIBE"}`.
+       SIGMA's Last Word comes after that. `"last_word": {"react": "rNN", "close": "x05"}` (or `x06`).
    - Title ≤ 70 chars (search words first). `description`: 3 short paragraphs (what the video answers, the 3 most striking numbers,
      a question for comments). Chapters are added automatically. `hashtags` 3–5 (no #Shorts), `youtube.tags` 12–15.
 

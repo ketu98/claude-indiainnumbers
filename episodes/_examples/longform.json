@@ -40,6 +40,19 @@
        }
       ]
      }
+    },
+    {
+     "spk": "TARA",
+     "say": "If you're enjoying this, a quick like really helps a small channel like ours. Thank you!",
+     "cap": "Enjoying it? A quick LIKE really helps!",
+     "visual": {
+      "type": "cta",
+      "title": "Enjoying it?",
+      "chips": [
+       "Tap LIKE"
+      ],
+      "button": "LIKE"
+     }
     }
    ]
   },
@@ -107,6 +120,21 @@
      "Waitlist"
     ],
     "button": "COMMENT"
+   }
+  },
+  {
+   "spk": "VEDA",
+   "say": "Thank you for spending these minutes with us. If you learned something, like it, share it with a friend, and subscribe for next week's deep dive.",
+   "cap": "Thank you! LIKE, SHARE with a friend, and SUBSCRIBE for next week",
+   "visual": {
+    "type": "cta",
+    "title": "Thank you!",
+    "chips": [
+     "LIKE",
+     "SHARE",
+     "SUBSCRIBE"
+    ],
+    "button": "SUBSCRIBE"
    }
   }
  ],
