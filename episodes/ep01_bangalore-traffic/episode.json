@@ -164,5 +164,24 @@
   "made": "2026-11-27 12:13",
   "slot": "Manual",
   "voice": "Narrator"
+ },
+ "upload": {
+  "video_id": "I9pPUZnpMM4",
+  "url": "https://youtube.com/shorts/I9pPUZnpMM4",
+  "video_file": "2026-11-27_12-13_ep01_bangalore-traffic_narrator.mp4",
+  "slot": null,
+  "slot_mode": "now",
+  "uploaded": "2026-11-27 16:01",
+  "publish_at": "2026-11-27T16:01+05:30",
+  "title": "Is Bangalore traffic REALLY the worst in India? 🚗",
+  "hashtags": [
+   "#Bangalore",
+   "#Bengaluru",
+   "#Traffic",
+   "#Shorts",
+   "#IndiaInNumbers"
+  ],
+  "error": null,
+  "published": "2026-11-27 16:01"
  }
 }
