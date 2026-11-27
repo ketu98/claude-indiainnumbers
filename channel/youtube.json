@@ -21,7 +21,7 @@
  "max_attempts": 3,
  "category_id": "27",
  "language": "en",
- "contains_synthetic_media": true,
+ "contains_synthetic_media": false,
  "made_for_kids": false,
  "notify_subscribers": true,
  "playlist_title": "India in Numbers · All episodes",
