@@ -15,10 +15,17 @@ One folder per episode: `episodes/epNN_<slug>/episode.json`. See ep01–ep03 for
   "lines": [ LINE, LINE, ... ],    // 4–5 lines after the welcome
   "title": "YouTube title, ≤ 70 chars, 1 emoji max",
   "description": "2–3 sentences + a question for comments",
-  "hashtags": ["#Topic", "#IndiaInNumbers", "#Shorts"],
+  "hashtags": ["#IndianRailways", "#VandeBharat", "#India"],   // 3–5, most important first; #Shorts + #IndiaInNumbers are added automatically
+  "youtube": {                     // optional extras for YouTube (see RUNBOOK step 4)
+    "tags": ["indian railways daily passengers", "india train facts"]   // 8–12 search phrases
+    // "title": "...", "description": "..."  (optional: override title/description on YouTube only)
+  },
   "sources": [{"name": "Publisher / dataset (date)", "url": "https://..."}]
 }
 ```
+
+`github` (written by publish_github.py) and `upload` (written by the YouTube uploader: video id, slot, go-live time, 48-hour views)
+are filled in automatically. Never edit them by hand.
 
 ## LINE
 ```jsonc

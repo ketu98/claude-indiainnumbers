@@ -50,6 +50,7 @@ def main():
 
     # ---- issue (one per episode)
     title = f"Ep {n:02d} · {nice} · {EP.get('title', EP.get('topic', ''))}"
+    grace = json.load(open(os.path.join(ROOT, 'channel', 'youtube.json'))).get('grace_hours', 3)
     src = '\n'.join(f"- [{s['name']}]({s['url']})" for s in EP.get('sources', []))
     ibody = f"""### 🎬 {vname}
 [▶ Open video]({vurl}) · [⬇ Download]({vraw}){f' · [📝 Upload text]({turl})' if turl else ''}
@@ -68,19 +69,26 @@ def main():
 
 Hook line to record: "{EP['hook']['text']}"
 
-### Review checklist
-- [ ] Watched it: numbers, captions and audio look right
-- [ ] Uploaded to YouTube (paste the link below, then switch the label to `uploaded`)
-
-YouTube link:
+### Posting
+🤖 The YouTube uploader posts this automatically: it checks the video, uploads it as private and schedules it for the
+best posting slot (at least {grace} h from now). Its comments below say when it goes live.
+**To stop it**, label this issue `skipped` or `needs-fix` any time before then.
 
 ---
-Labels: `ready-to-review` → `uploaded` (or `needs-fix` / `skipped`). TRACKER.md updates on the next run.
+Labels: `ready-to-review` → `scheduled` → `uploaded` (or `needs-fix` / `skipped` / `upload-failed`). TRACKER.md updates on every run.
 """
     issue_no = EP.get('github', {}).get('issue')
     if issue_no:
         gh('-X', 'PATCH', f'{R}/issues/{issue_no}', '-f', f'title={title}', '-f', f'body={ibody}')
         if voice == 'Narrator': gh('-X', 'POST', f'{R}/issues/{issue_no}/labels', '-f', 'labels[]=narrator-voice')
+        # a re-publish (fix or new voice) puts the episode back in the YouTube queue, unless it is already live
+        if not EP.get('upload', {}).get('published'):
+            for l in ('needs-fix', 'skipped', 'upload-failed'): gh('-X', 'DELETE', f'{R}/issues/{issue_no}/labels/{l}', check=False)
+            gh('-X', 'POST', f'{R}/issues/{issue_no}/labels', '-f', 'labels[]=ready-to-review')
+            up = EP.get('upload', {})
+            if not up.get('video_id'): EP.pop('upload', None)
+            elif up.get('cancelled') or up.get('error'):   # cancelled / failed upload: start fresh, never revive the old one
+                EP['upload'] = {'replaced': (up.get('replaced') or []) + [up['video_id']]}
     else:
         args = ['-X', 'POST', f'{R}/issues', '-f', f'title={title}', '-f', f'body={ibody}']
         for l in ['episode', 'ready-to-review'] + (['narrator-voice'] if voice == 'Narrator' else []): args += ['-f', f'labels[]={l}']
@@ -98,7 +106,8 @@ Labels: `ready-to-review` → `uploaded` (or `needs-fix` / `skipped`). TRACKER.m
         git('commit', '-m', f"Ep {n:02d}: {EP.get('topic', '')} ({stamp})")
     for attempt in range(2):
         if git('-c', 'push.negotiate=true', 'push', 'origin', 'HEAD:main', check=False).returncode == 0: break
-        git('pull', '--rebase', '--depth=50', 'origin', 'main', check=False)
+        git('rebase', '--abort', check=False)   # TRACKER.md may clash with the uploader's commit: keep ours, it is rebuilt every run
+        git('pull', '--rebase', '-X', 'theirs', '--depth=50', 'origin', 'main', check=False)
     else:
         raise SystemExit('push failed twice')
     print('ISSUE', f"https://github.com/{REPO}/issues/{issue_no}"); print('VIDEO', vurl)
