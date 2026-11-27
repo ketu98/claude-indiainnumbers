@@ -44,11 +44,12 @@ if (`$LASTEXITCODE -eq 0) {
 # 4. Background task: at log-on + every 30 minutes, only when online, catches up after sleep
 $action   = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$Sync`""
 $triggers = @(
-    (New-ScheduledTaskTrigger -AtLogOn),
+    (New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"),
     (New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 30))
 )
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -RunOnlyIfNetworkAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-Register-ScheduledTask -TaskName 'India in Numbers sync' -Action $action -Trigger $triggers -Settings $settings -Force | Out-Null
+$principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Limited
+Register-ScheduledTask -TaskName 'India in Numbers sync' -Action $action -Trigger $triggers -Settings $settings -Principal $principal -Force | Out-Null
 
 & powershell -NoProfile -ExecutionPolicy Bypass -File $Sync
 Write-Host ''
