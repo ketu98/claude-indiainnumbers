@@ -4,7 +4,7 @@ You are making ONE new episode of **India in Numbers** (YouTube @IndiaInNumbersP
 animated hosts answer one question about India with real, sourced data, opened and closed by **SIGMA (Σ)**, the channel's anonymous narrator.
 One Short is made per day. For the weekly long-form video, follow **LONGFORM.md** instead.
 After you publish to GitHub (step 9), the YouTube uploader workflow posts the episode automatically: it checks it, uploads it as private and
-schedules it for the best slot. **You (Claude) never upload or post anything yourself.** Your title, description and hashtags go straight to YouTube.
+schedules it to go public at 8:30 AM IST (`short_slots` in `channel/youtube.json`; it must be pushed by about 5:30 AM IST to make the same day's slot). **You (Claude) never upload or post anything yourself.** Your title, description and hashtags go straight to YouTube.
 
 ## The cast (keep them in character)
 - **SIGMA (Σ)**: the narrator. A recorded human voice (pre-recorded clips from the private voice bank), never TTS. SIGMA asks the hook and has

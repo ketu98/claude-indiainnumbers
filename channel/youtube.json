@@ -1,8 +1,10 @@
 {
- "_about": "Settings for engine/youtube_upload.py (run by .github/workflows/youtube.yml). Times are IST.",
+ "_about": "Settings for engine/youtube_upload.py (run by .github/workflows/youtube.yml). Times are IST. short_slots: fixed go-live time(s) for Shorts (owner's choice); long-form learns its best time from candidate_slots.",
  "enabled": true,
+ "short_slots": [
+  "08:30"
+ ],
  "candidate_slots": [
-  "08:00",
   "12:30",
   "17:30",
   "19:30",

@@ -169,10 +169,11 @@ def taken_times(eps):
     return out
 
 
-def slot_stats(eps):
+def slot_stats(eps, long=True):
     slots = CFG['fixed_slots'] or CFG['candidate_slots']
     views, used = {s: [] for s in slots}, {s: 0 for s in slots}
     for _, E in eps:
+        if is_long(E) != long: continue
         u = E.get('upload') or {}
         if u.get('slot') in used and not u.get('cancelled'):
             used[u['slot']] += 1
@@ -180,20 +181,24 @@ def slot_stats(eps):
     return slots, views, used
 
 
-def pick_publish_time(eps):
+def pick_publish_time(eps, E=None):
     """Learning: spread episodes evenly over the candidate slots (soonest first) until each has explore_per_slot
     measured results. Then: post in the slot with the best median 48-hour views that is free within a day,
     still trying another slot explore_rate of the time so the ranking keeps up with the audience."""
     earliest = NOW.astimezone(IST) + dt.timedelta(hours=CFG['grace_hours'])
     taken, gap = taken_times(eps), dt.timedelta(hours=CFG['min_gap_hours'])
-    slots, views, used = slot_stats(eps)
+    long = bool(E) and is_long(E)
+    if not long and CFG.get('short_slots'):      # Shorts: fixed daily time(s) set by the owner
+        slots, views, used = list(CFG['short_slots']), {}, {}
+    else:
+        slots, views, used = slot_stats(eps, long)
     def next_free(s):
         for k in range(10):
             t = slot_time(earliest.date() + dt.timedelta(days=k), s)
             if t >= earliest and all(abs(t - x) >= gap for x in taken): return t
     opts = [(s, next_free(s)) for s in slots]
     opts = [(s, t) for s, t in opts if t]
-    if CFG['fixed_slots']:
+    if CFG['fixed_slots'] or (not long and CFG.get('short_slots')):
         s, t = min(opts, key=lambda x: x[1]); return s, t, 'fixed'
     if min(len(v) for v in views.values()) < CFG['explore_per_slot']:
         s, t = min(opts, key=lambda x: (used[x[0]], x[1])); return s, t, 'learning'
@@ -271,7 +276,7 @@ def handle_new(yt, eps, epj, E, labels):
                 '\n\nFix it and re-run `publish_github.py` (that puts the `ready-to-review` label back), and it will be posted on the next run.')
         return True
     now_mode = n in CFG.get('publish_now_eps', [])
-    slot, when, mode = (None, None, 'now') if now_mode else pick_publish_time(eps)
+    slot, when, mode = (None, None, 'now') if now_mode else pick_publish_time(eps, E)
     log(f'Ep {n:02d}: uploading {os.path.basename(path)} -> ' + ('public now' if now_mode else f'{ist(when)} (slot {slot}, {mode})'))
     if DRY: log('  [dry] title:', M['title'], '\n  [dry] tags:', M['tags'], '\n' + M['description']); return False
     try:
