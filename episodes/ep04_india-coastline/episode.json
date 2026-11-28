@@ -168,5 +168,15 @@
    "name": "DeshGujarat — Gujarat's coastline revised to 2,340.62 km (May 2025)",
    "url": "https://deshgujarat.com/2025/05/05/its-official-gujarats-coastline-is-no-longer-1600-km-its-revised-to-2340-62-km-now/"
   }
- ]
+ ],
+ "github": {
+  "issue": 5,
+  "video": "https://github.com/ketu98/claude-indiainnumbers/blob/main/videos/2026-11/2026-11-28_08-52_ep04_india-coastline_veda.mp4",
+  "video_file": "2026-11-28_08-52_ep04_india-coastline_veda.mp4",
+  "path": "videos/2026-11/2026-11-28_08-52_ep04_india-coastline_veda.mp4",
+  "made": "2026-11-28 08:52",
+  "slot": "Daily",
+  "voice": "VEDA",
+  "kind": "short"
+ }
 }
