@@ -79,6 +79,8 @@ YouTube refuses to pay channels whose videos look template-made with little vari
    - NN = highest existing episode number + 1 (pull main first).
    - **Hook**: with a SIGMA question: `"hook": {"text": "<the clip's exact text>", "clip": "qNN", "intro": "i01"}` (alternate `i01`/`i02`,
      or leave `intro` out sometimes). Without one: a curiosity question of 10 words or fewer.
+   - **Get to the first number fast**: after the hook comes one ~3 s intro beat (automatic), so the first host line must state the
+     headline number straight away (no warm-up sentence). Keep the hook short: viewers swipe away in the first seconds.
    - Then 4–5 host lines, the last one a `cta`. Each `say` about 25 words max, each `cap` about 20 words max.
    - **The `cta` line asks for support in one quick, warm beat**: the comment question, then 3–7 words of nudge, different every day
      and matching the topic, e.g. "…Tell us below, and follow for tomorrow's number!", "…Like it if that surprised you!",

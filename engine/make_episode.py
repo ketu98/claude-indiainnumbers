@@ -40,6 +40,12 @@ WELCOME = [
     ('TARA', "And I'm Tara! Welcome to India in Numbers, where we settle your questions with real data!",
      "And I'm TARA! Welcome to INDIA IN NUMBERS, where we settle your questions with real data!"),
 ]
+# Shorts: one quick intro beat (about 3 s) so the first number lands early. The host rotates with the episode number.
+WELCOME_SHORT = [
+    ('TARA', "Welcome to India in Numbers! Let's settle it with real data!", "Welcome to INDIA IN NUMBERS! Let's settle it with real data!"),
+    ('VEDA', "This is India in Numbers. Let's check the real data.", "This is INDIA IN NUMBERS. Let's check the real data."),
+    ('REGINALD', "India in Numbers, at your service. Real data, if you please.", "INDIA IN NUMBERS, at your service. Real data, if you please."),
+]
 
 # ---------------------------------------------------------------- helpers
 _fc = {}
@@ -169,8 +175,11 @@ def build_lines():
         HOOK_MODE = 'veda'; HOOK = tts('VEDA', hk.get('say', hk['text']), wpath('hook.wav'))
     HOOK_ENV = env_of(HOOK)
     seq = []
-    if EP.get('welcome', True):
-        for spk, say, cap in WELCOME: seq.append(dict(spk=spk, say=say, cap=cap, visual={'type': 'welcome'}))
+    wel = EP.get('welcome', True)
+    if wel:
+        full = wel == 'full' or EP.get('kind') == 'long'
+        rows = WELCOME if full else [WELCOME_SHORT[int(EP.get('ep', 0)) % len(WELCOME_SHORT)]]
+        for spk, say, cap in rows: seq.append(dict(spk=spk, say=say, cap=cap, visual={'type': 'welcome'}))
     if EP.get('sigma_intro'):
         seq.append(dict(spk='SIGMA', clips=[EP['sigma_intro']], visual={'type': 'sigma', 'kicker': FORMATS.get(EP.get('format', 'long'), FORMATS['long'])[0]}))
     if EP.get('chapters'):
@@ -486,16 +495,17 @@ def hook_panel(img, d, t):
 def panel_welcome(img, d, u, a, L):
     t = L['start'] + u; WL = [x for x in LINES if x['vis'] == 'welcome']; last = WL[-1]
     a = eo(prog(t, WL[0]['start'] - 0.05, WL[0]['start'] + 0.3))
-    for Lw in WL:
-        q = prog(t, Lw['start'], Lw['start'] + 0.35)
+    pills = [(Lw['spk'], Lw['start']) for Lw in WL] if len(WL) > 1 else [(k, WL[0]['start'] + 0.12 * i) for i, k in enumerate(ORDER)]
+    for k, s0 in pills:
+        q = prog(t, s0, s0 + 0.35)
         if q <= 0: continue
-        k = Lw['spk']; sc = back(q); f = F('InterDisplay-Black.otf', 48)
+        sc = back(q); f = F('InterDisplay-Black.otf', 48)
         w = (f.getlength(k) + 60) * sc; h = 88 * sc; x = CAST[k]['x']; y = 420
         d.rounded_rectangle((x - w / 2, y - h / 2, x + w / 2, y + h / 2), int(h / 2), fill=CAST[k]['col'] + (int(255 * a),))
         put_text(img, (x, y), k, f, (14, 14, 28), a, 'mm', sc)
     ti = last['start'] + wt(last, 'INDIA')
     p = prog(t, ti - 0.35, ti - 0.05)
-    if p > 0: put_text(img, (540, 590), 'Welcome to', F('Inter-SemiBold.otf', 46), (190, 198, 235), a * eo(p))
+    if p > 0 and (len(WL) > 1 or 'Welcome' in last['cap']): put_text(img, (540, 590), 'Welcome to', F('Inter-SemiBold.otf', 46), (190, 198, 235), a * eo(p))
     p = prog(t, ti - 0.1, ti + 0.25)
     if p > 0: put_text(img, (540, 690), 'INDIA IN NUMBERS', fit_font('InterDisplay-Black.otf', 110, 'INDIA IN NUMBERS', 960), (255, 255, 255), a * eo(p), 'mm', back(p) if p < 1 else 1)
     tr = last['start'] + wt(last, 'real'); q = prog(t, tr, tr + 0.35)

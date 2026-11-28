@@ -14,7 +14,7 @@ One folder per episode: `episodes/epNN_<slug>/episode.json`. See ep01–ep03 for
     "intro": "i01"                 // optional: SIGMA's opener before the question ("Sigma here. Question for the panel.")
   },
   "format": "myth",                // classic | myth | versus | then-now | ranking | guess | viewer | tracker (RUNBOOK step 3); "long" for long-form
-  "welcome": true,                 // VEDA / REGINALD / TARA intros (keep true)
+  "welcome": true,                 // Shorts: one quick ~3 s intro line (host rotates by ep number); long-form: full VEDA / REGINALD / TARA intros. "full" forces the full intro (avoid on Shorts). Keep it on.
   "lines": [ LINE, LINE, ... ],    // 4–5 lines after the welcome
   "last_word": {"react": "r08", "close": "s03"},   // SIGMA's closing card "THE LAST WORD" (voice-bank clips; skipped if missing)
   "title": "YouTube title, ≤ 70 chars, 1 emoji max",
