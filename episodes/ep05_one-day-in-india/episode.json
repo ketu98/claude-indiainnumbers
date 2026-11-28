@@ -1,0 +1,954 @@
+{
+ "ep": 5,
+ "kind": "long",
+ "format": "long",
+ "slug": "one-day-in-india",
+ "topic": "What does one single day in India look like, in numbers?",
+ "hook": {
+  "text": "What does one single day in India look like, in numbers?",
+  "clip": "L01",
+  "lines": [
+   "What does",
+   "one single day",
+   "in India look like,",
+   "in numbers?"
+  ]
+ },
+ "sigma_intro": "x01",
+ "welcome": true,
+ "chapters": [
+  {
+   "title": "48 new Indians a minute",
+   "lines": [
+    {
+     "spk": "VEDA",
+     "say": "Let's start at midnight. India registered two point five two crore births in twenty twenty-three.",
+     "cap": "India registered 2.52 CRORE births in 2023",
+     "visual": {
+      "type": "bigstat",
+      "value": 2.52,
+      "decimals": 2,
+      "suffix": " crore",
+      "label": "births registered, 2023 (Civil Registration System)",
+      "count_at": "2.52"
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "Wait, so that's about sixty nine thousand babies every single day?",
+     "cap": "Wait, that's about 69,000 babies EVERY DAY?",
+     "visual": {
+      "type": "fact",
+      "kicker": "Births registered, per day (2023)",
+      "big": "~69,000",
+      "lines": [
+       {
+        "text": "Every single day of the year",
+        "at": "DAY?"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "Roughly forty eight a minute, old chap. By the time your chai cools, a small classroom has arrived.",
+     "cap": "About 48 every MINUTE. One chai later, a small CLASSROOM has arrived.",
+     "visual": {
+      "type": "gauge",
+      "title": "Every minute",
+      "value": 48,
+      "max": 60,
+      "unit_label": "births registered",
+      "sub": {
+       "text": "2.52 crore ÷ 365 days ÷ 1,440 minutes",
+       "at": "CLASSROOM"
+      }
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "The number is easing, though. Twenty twenty-three had about two point three lakh fewer births than twenty twenty-two.",
+     "cap": "Easing: 2023 had about 2.3 LAKH fewer births than 2022",
+     "visual": {
+      "type": "vs",
+      "title": "Births registered",
+      "subtitle": "crore per year",
+      "a": [
+       "2022",
+       2.54
+      ],
+      "b": [
+       "2023",
+       2.52
+      ],
+      "unit": " cr",
+      "decimals": 2,
+      "highlight": "b",
+      "pill": {
+       "text": "-2.3 lakh",
+       "at": "LAKH"
+      }
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "Still a full house, I'm afraid. Just a slightly calmer one.",
+     "cap": "Still a FULL HOUSE. Just a slightly calmer one.",
+     "visual": {
+      "type": "fact",
+      "kicker": "Verdict",
+      "big": "FULL HOUSE",
+      "lines": [
+       {
+        "text": "Still ~69,000 a day",
+        "at": "calmer"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "Enjoying our little day trip? A quick like really helps a small channel like ours. Thank you!",
+     "cap": "Enjoying the trip? A quick LIKE really helps a small channel. Thank you!",
+     "visual": {
+      "type": "cta",
+      "title": "Enjoying it?",
+      "chips": [
+       "Tap LIKE"
+      ],
+      "button": "LIKE"
+     }
+    }
+   ]
+  },
+  {
+   "title": "Breakfast for a whole country",
+   "lines": [
+    {
+     "spk": "VEDA",
+     "say": "Breakfast first. India produced two hundred and forty seven point nine million tonnes of milk in twenty twenty-four, twenty-five. The world's largest.",
+     "cap": "247.9 MILLION tonnes of milk in 2024-25. The world's LARGEST.",
+     "visual": {
+      "type": "bigstat",
+      "value": 247.87,
+      "decimals": 1,
+      "suffix": " MT",
+      "label": "milk produced, 2024-25 (million tonnes)",
+      "count_at": "247.9",
+      "then": {
+       "text": "#1 in the world",
+       "at": "LARGEST."
+      }
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "That's nearly sixty eight crore kilos of milk. Every single day!",
+     "cap": "That's nearly 68 CRORE kg of milk. Every single DAY!",
+     "visual": {
+      "type": "fact",
+      "kicker": "Milk produced, every day",
+      "big": "~68 crore kg",
+      "lines": [
+       {
+        "text": "247.87 million tonnes ÷ 365",
+        "at": "DAY!"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "Per person, four hundred and eighty five grams a day, up from four hundred and sixty eight. Two generous glasses each. Splendid.",
+     "cap": "485 g per person per day, up from 468 g. Two generous GLASSES each.",
+     "visual": {
+      "type": "vs",
+      "title": "Milk available per person",
+      "subtitle": "grams per day",
+      "a": [
+       "2023-24",
+       468
+      ],
+      "b": [
+       "2024-25",
+       485
+      ],
+      "unit": " g",
+      "highlight": "b",
+      "pill": {
+       "text": "+17 g a day",
+       "at": "485"
+      }
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "Then the eggs. One hundred and forty nine billion of them in the same year.",
+     "cap": "Then the EGGS: 149.1 BILLION in 2024-25",
+     "visual": {
+      "type": "bigstat",
+      "value": 149.11,
+      "decimals": 1,
+      "suffix": " bn",
+      "label": "eggs produced, 2024-25",
+      "count_at": "149.1"
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "So about forty one crore eggs a day. India is an omelette nation!",
+     "cap": "About 41 CRORE eggs a day. OMELETTE nation!",
+     "visual": {
+      "type": "fact",
+      "kicker": "Eggs, every day",
+      "big": "~41 crore",
+      "lines": [
+       {
+        "text": "Up 4.44% in a year",
+        "at": "OMELETTE"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "And the grain, old chap. A record three hundred and fifty seven point seven million tonnes of foodgrain in twenty twenty-four, twenty-five.",
+     "cap": "A RECORD 357.7 million tonnes of foodgrain in 2024-25",
+     "visual": {
+      "type": "bars",
+      "title": "Foodgrain · 2024-25",
+      "subtitle": "million tonnes · Agriculture Ministry final estimates",
+      "items": [
+       [
+        "All foodgrain",
+        357.73
+       ],
+       [
+        "Rice",
+        150.1
+       ],
+       [
+        "Wheat",
+        117.85
+       ]
+      ],
+      "unit": " MT",
+      "decimals": 1,
+      "highlight": 0,
+      "badges": [
+       {
+        "text": "All-time record",
+        "at": "RECORD"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "That's about ninety eight crore kilos of grain, every day, from India's farms.",
+     "cap": "About 98 CRORE kg of grain, EVERY DAY",
+     "visual": {
+      "type": "gauge",
+      "title": "Grain, every day",
+      "value": 98,
+      "max": 120,
+      "suffix": " cr kg",
+      "unit_label": "crore kilos per day",
+      "sub": {
+       "text": "357.73 million tonnes ÷ 365",
+       "at": "DAY"
+      }
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "And output grew eight percent in just one year. Big respect to every farmer out there!",
+     "cap": "Output up 8% in ONE year. Big respect to every FARMER!",
+     "visual": {
+      "type": "fact",
+      "kicker": "Foodgrain output, 2024-25 vs 2023-24",
+      "big": "+8%",
+      "lines": [
+       {
+        "text": "Rice and wheat: both all-time records",
+        "at": "FARMER!"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "title": "A country that never stays home",
+   "lines": [
+    {
+     "spk": "TARA",
+     "say": "Commute time! Indian Railways carried seven hundred and forty one crore passengers in twenty twenty-five, twenty-six.",
+     "cap": "Indian Railways: 741 CRORE passengers in FY 2025-26",
+     "visual": {
+      "type": "bigstat",
+      "value": 741,
+      "suffix": " crore",
+      "label": "passenger journeys, FY 2025-26",
+      "count_at": "741"
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "Which is about two crore people a day, old chap, on roughly twenty five thousand trains.",
+     "cap": "About 2 CRORE people a day, on roughly 25,000 TRAINS",
+     "visual": {
+      "type": "fact",
+      "kicker": "Indian Railways, every day",
+      "big": "~2 crore",
+      "lines": [
+       {
+        "text": "on about 25,000 trains a day",
+        "at": "TRAINS"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "Up in the sky, domestic flights carried about one thousand six hundred and seventy seven lakh passengers that year.",
+     "cap": "Domestic flights: about 1,677 LAKH passengers in FY 2025-26",
+     "visual": {
+      "type": "bigstat",
+      "value": 1677.4,
+      "decimals": 1,
+      "suffix": " lakh",
+      "label": "domestic air passengers, FY 2025-26",
+      "count_at": "1,677"
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "That's around four point six lakh flyers a day. So trains carry over forty times more people!",
+     "cap": "About 4.6 LAKH flyers a day. Trains carry over 40x MORE!",
+     "visual": {
+      "type": "bars",
+      "title": "People per day",
+      "subtitle": "lakh · FY 2025-26",
+      "items": [
+       [
+        "Trains",
+        203.0
+       ],
+       [
+        "Flights",
+        4.6
+       ]
+      ],
+      "unit": " lakh",
+      "decimals": 1,
+      "highlight": 0,
+      "badges": [
+       {
+        "text": "44x",
+        "at": "MORE!"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "And the roads? A record two point nine seven crore new vehicles were sold in twenty twenty-five, twenty-six.",
+     "cap": "A RECORD 2.97 crore new vehicles sold in FY 2025-26",
+     "visual": {
+      "type": "bigstat",
+      "value": 2.97,
+      "decimals": 2,
+      "suffix": " crore",
+      "label": "vehicles sold to buyers, FY 2025-26 (FADA)",
+      "count_at": "2.97",
+      "then": {
+       "text": "Up 13.3% in a year",
+       "at": "2025-26"
+      }
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "That's about eighty one thousand vehicles a day, or fifty six every minute.",
+     "cap": "About 81,000 vehicles a day. 56 every MINUTE.",
+     "visual": {
+      "type": "gauge",
+      "title": "Every minute",
+      "value": 56,
+      "max": 60,
+      "unit_label": "new vehicles sold",
+      "sub": {
+       "text": "~81,000 a day",
+       "at": "MINUTE."
+      }
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "And most have two wheels! About fifty nine thousand scooters and bikes a day, versus thirteen thousand cars.",
+     "cap": "About 59,000 TWO-WHEELERS a day vs 13,000 CARS",
+     "visual": {
+      "type": "vs",
+      "title": "New vehicles, per day",
+      "subtitle": "FY 2025-26",
+      "a": [
+       "Cars",
+       12891
+      ],
+      "b": [
+       "Two-wheelers",
+       58686
+      ],
+      "indian": true,
+      "highlight": "b",
+      "pill": {
+       "text": "4.5x",
+       "at": "CARS"
+      }
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "Seventy two percent of everything sold had two wheels. Hold on to your helmets, everyone.",
+     "cap": "72% of all vehicles sold had TWO wheels. Hold on to your HELMETS.",
+     "visual": {
+      "type": "fact",
+      "kicker": "Two-wheelers' share of sales, FY 2025-26",
+      "big": "72%",
+      "lines": [
+       {
+        "text": "2.14 crore of 2.97 crore",
+        "at": "HELMETS."
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "title": "Money that never sleeps",
+   "lines": [
+    {
+     "spk": "VEDA",
+     "say": "Now, money. In October twenty twenty-six, India made twenty five point four seven billion UPI payments.",
+     "cap": "October 2026: 25.47 BILLION UPI payments",
+     "visual": {
+      "type": "bigstat",
+      "value": 25.47,
+      "decimals": 2,
+      "suffix": " bn",
+      "label": "UPI transactions, October 2026 (NPCI)",
+      "count_at": "25.47"
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "That's eighty two crore payments a day! Over nine thousand five hundred every second!",
+     "cap": "82 CRORE payments a day! 9,500+ every SECOND!",
+     "visual": {
+      "type": "fact",
+      "kicker": "UPI, October 2026",
+      "big": "82 crore / day",
+      "lines": [
+       {
+        "text": "About 9,500 every second",
+        "at": "SECOND!"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "And the value, old chap. One lakh one thousand seven hundred crore rupees a day. A first.",
+     "cap": "₹1,01,707 CRORE a day. The FIRST time above ₹1 lakh crore.",
+     "visual": {
+      "type": "bigstat",
+      "value": 101707,
+      "prefix": "₹",
+      "suffix": " cr",
+      "indian": true,
+      "label": "average UPI value per day, October 2026",
+      "count_at": "1,01,707",
+      "then": {
+       "text": "First time above ₹1 lakh crore",
+       "at": "FIRST"
+      }
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "That works out to about one point one eight crore rupees moving every second.",
+     "cap": "About ₹1.18 CRORE moving every SECOND",
+     "visual": {
+      "type": "gauge",
+      "title": "Every second",
+      "value": 1.18,
+      "max": 1.5,
+      "decimals": 2,
+      "prefix": "₹",
+      "suffix": " cr",
+      "unit_label": "via UPI",
+      "sub": {
+       "text": "₹1,01,707 crore ÷ 86,400 seconds",
+       "at": "SECOND"
+      }
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "And October beat September by five point eight percent. Festive shopping, everyone!",
+     "cap": "October beat September by 5.8%. FESTIVE shopping!",
+     "visual": {
+      "type": "vs",
+      "title": "UPI payments per month",
+      "subtitle": "billions · 2026",
+      "a": [
+       "Sep",
+       24.07
+      ],
+      "b": [
+       "Oct",
+       25.47
+      ],
+      "unit": " bn",
+      "decimals": 2,
+      "highlight": "b",
+      "pill": {
+       "text": "+5.8%",
+       "at": "5.8%."
+      }
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "My verdict: cash isn't gone, old chap. But it is certainly on a very long holiday.",
+     "cap": "Verdict: cash isn't gone. But it's on a very long HOLIDAY.",
+     "visual": {
+      "type": "fact",
+      "kicker": "The panel's verdict",
+      "big": "UPI ✓",
+      "lines": [
+       {
+        "text": "Cash: on a long holiday",
+        "at": "HOLIDAY."
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "title": "The day the power peaked",
+   "lines": [
+    {
+     "spk": "VEDA",
+     "say": "On the twenty first of May, twenty twenty-six, India's power demand hit an all-time high of two hundred and seventy point eight gigawatts.",
+     "cap": "21 May 2026: peak power demand hit an ALL-TIME HIGH of 270.8 GW",
+     "visual": {
+      "type": "bigstat",
+      "value": 270.8,
+      "decimals": 1,
+      "suffix": " GW",
+      "label": "all-time peak electricity demand, 21 May 2026",
+      "count_at": "270.8"
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "In twenty thirteen, fourteen, the peak was just one hundred and thirty five point nine. It's almost doubled!",
+     "cap": "In 2013-14 the peak was just 135.9 GW. Almost DOUBLED!",
+     "visual": {
+      "type": "vs",
+      "title": "Peak power demand",
+      "subtitle": "gigawatts",
+      "a": [
+       "2013-14",
+       135.9
+      ],
+      "b": [
+       "2026",
+       270.8
+      ],
+      "unit": " GW",
+      "decimals": 1,
+      "highlight": "b",
+      "pill": {
+       "text": "~2x",
+       "at": "DOUBLED!"
+      }
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "And capacity went from two hundred and forty nine gigawatts to five hundred and fifty two. A splendidly busy decade.",
+     "cap": "Capacity: 249 GW to 552 GW. A splendidly BUSY decade.",
+     "visual": {
+      "type": "bars",
+      "title": "Installed power capacity",
+      "subtitle": "gigawatts · Ministry of Power",
+      "items": [
+       [
+        "Mar 2014",
+        249
+       ],
+       [
+        "Jul 2026",
+        552
+       ]
+      ],
+      "unit": " GW",
+      "highlight": 1,
+      "badges": [
+       {
+        "text": "2.2x",
+        "at": "BUSY"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "Power shortages? Down to just zero point zero three percent, from four point two percent in twenty thirteen, fourteen.",
+     "cap": "Energy shortage: just 0.03%, down from 4.2% in 2013-14",
+     "visual": {
+      "type": "fact",
+      "kicker": "Energy shortage, 2025-26",
+      "big": "0.03%",
+      "lines": [
+       {
+        "text": "It was 4.2% in 2013-14",
+        "at": "4.2%"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "Per person, Indians used one thousand four hundred and sixty units of electricity in twenty twenty-four, twenty-five.",
+     "cap": "Per person: 1,460 UNITS of electricity in 2024-25",
+     "visual": {
+      "type": "bigstat",
+      "value": 1460,
+      "suffix": " kWh",
+      "label": "electricity used per person, 2024-25",
+      "count_at": "1,460"
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "Which is about four units a day each. A fan, some lights, the fridge, and that phone charger, I suppose.",
+     "cap": "About 4 UNITS a day each. A fan, some lights, the fridge, the CHARGER.",
+     "visual": {
+      "type": "gauge",
+      "title": "Per person, per day",
+      "value": 4.0,
+      "max": 6,
+      "decimals": 1,
+      "unit_label": "units (kWh)",
+      "sub": {
+       "text": "1,460 ÷ 365",
+       "at": "CHARGER."
+      }
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "And now more than half of India's power capacity is non-fossil: solar, wind, hydro and nuclear.",
+     "cap": "Over HALF of power capacity is now non-fossil",
+     "visual": {
+      "type": "fact",
+      "kicker": "Non-fossil share of capacity (Oct 2025)",
+      "big": "51%",
+      "lines": [
+       {
+        "text": "Solar, wind, hydro, nuclear",
+        "at": "non-fossil"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "title": "The phone in every pocket",
+   "lines": [
+    {
+     "spk": "TARA",
+     "say": "Finally, our phones! Indians used two lakh eighty five thousand petabytes of mobile data in twenty twenty-five, twenty-six.",
+     "cap": "2,85,376 PETABYTES of mobile data in FY 2025-26!",
+     "visual": {
+      "type": "bigstat",
+      "value": 285376,
+      "indian": true,
+      "suffix": " PB",
+      "label": "wireless data used, FY 2025-26 (TRAI)",
+      "count_at": "2,85,376"
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "Up nearly twenty five percent in a single year. Somebody is watching a great many reels.",
+     "cap": "Up nearly 25% in ONE year. Someone's watching a lot of REELS.",
+     "visual": {
+      "type": "vs",
+      "title": "Wireless data per year",
+      "subtitle": "petabytes",
+      "a": [
+       "FY25",
+       228779
+      ],
+      "b": [
+       "FY26",
+       285376
+      ],
+      "indian": true,
+      "unit": " PB",
+      "highlight": "b",
+      "pill": {
+       "text": "+24.7%",
+       "at": "25%"
+      }
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "Per user, that's twenty five point five gigabytes a month, up from twenty one point five a year earlier.",
+     "cap": "Per user: 25.5 GB a MONTH, up from 21.5 GB",
+     "visual": {
+      "type": "bars",
+      "title": "Data per user, per month",
+      "subtitle": "GB · TRAI",
+      "items": [
+       [
+        "Mar 2025",
+        21.53
+       ],
+       [
+        "Mar 2026",
+        25.51
+       ]
+      ],
+      "unit": " GB",
+      "decimals": 1,
+      "highlight": 1
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "That's about eight hundred and seventy megabytes a day, each. Nearly a whole movie, every day!",
+     "cap": "About 870 MB a day, EACH. Nearly a whole MOVIE!",
+     "visual": {
+      "type": "fact",
+      "kicker": "Per user, per day",
+      "big": "~870 MB",
+      "lines": [
+       {
+        "text": "25.51 GB ÷ 30 days",
+        "at": "MOVIE!"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "REGINALD",
+     "say": "And it keeps getting cheaper. Operators earned about eight rupees per gigabyte, down from nearly nine.",
+     "cap": "Cheaper too: about ₹8 per GB, down from ₹8.97",
+     "visual": {
+      "type": "vs",
+      "title": "Revenue per GB",
+      "subtitle": "rupees",
+      "a": [
+       "FY25",
+       8.97
+      ],
+      "b": [
+       "FY26",
+       8.02
+      ],
+      "prefix": "₹",
+      "decimals": 2,
+      "highlight": "b",
+      "pill": {
+       "text": "-10.6%",
+       "at": "₹8"
+      }
+     }
+    },
+    {
+     "spk": "VEDA",
+     "say": "So in one Indian day: sixty nine thousand births, two crore train trips, and eighty two crore UPI payments.",
+     "cap": "ONE DAY: 69,000 births, 2 CRORE train trips, 82 CRORE UPI payments",
+     "visual": {
+      "type": "fact",
+      "kicker": "One day in India",
+      "big": "24 HOURS",
+      "lines": [
+       {
+        "text": "~69,000 births registered",
+        "at": "births,"
+       },
+       {
+        "text": "~2 crore train journeys",
+        "at": "train"
+       },
+       {
+        "text": "~82 crore UPI payments",
+        "at": "UPI"
+       }
+      ]
+     }
+    },
+    {
+     "spk": "TARA",
+     "say": "Plus sixty eight crore kilos of milk and forty one crore eggs. What a day!",
+     "cap": "Plus 68 CRORE kg of milk and 41 CRORE eggs. What a DAY!",
+     "visual": {
+      "type": "bars",
+      "title": "Every day, on average",
+      "subtitle": "crore",
+      "items": [
+       [
+        "Milk (kg)",
+        67.9
+       ],
+       [
+        "Eggs",
+        40.9
+       ]
+      ],
+      "unit": " cr",
+      "decimals": 0,
+      "highlight": 0
+     }
+    }
+   ]
+  }
+ ],
+ "lines": [
+  {
+   "spk": "REGINALD",
+   "say": "Which number surprised you most today? Do tell us in the comments, old chap.",
+   "cap": "Which number SURPRISED you most? Tell us in the comments!",
+   "visual": {
+    "type": "cta",
+    "title": "Most surprising?",
+    "chips": [
+     "Births",
+     "Milk",
+     "UPI",
+     "Data"
+    ],
+    "button": "COMMENT"
+   }
+  },
+  {
+   "spk": "VEDA",
+   "say": "Thank you for spending these minutes with us. If you learned something, please like it, share it with a friend who loves numbers, and subscribe for next week's deep dive.",
+   "cap": "Thank you! LIKE, SHARE with a numbers-loving friend, and SUBSCRIBE for next week",
+   "visual": {
+    "type": "cta",
+    "title": "Thank you!",
+    "chips": [
+     "LIKE",
+     "SHARE",
+     "SUBSCRIBE"
+    ],
+    "button": "SUBSCRIBE"
+   }
+  }
+ ],
+ "last_word": {
+  "react": "r01",
+  "close": "x02"
+ },
+ "thumb_text": "ONE DAY in India: 82 CRORE payments",
+ "title": "One Day in India in Numbers: Births, Milk, Trains, UPI & Power 🇮🇳",
+ "description": "What does one single day in India look like? The panel follows a full 24 hours through official data: births, breakfast, commutes, money, electricity and mobile data.\n\nThe standouts: about 69,000 births registered every day (2023), about 2 crore train journeys a day, and 82 crore UPI payments a day in October 2026, worth over ₹1 lakh crore. Peak power demand has almost doubled since 2013-14.\n\nWhich of these numbers surprised you most? Tell us in the comments.",
+ "hashtags": [
+  "#IndiaFacts",
+  "#UPI",
+  "#IndianRailways",
+  "#India"
+ ],
+ "youtube": {
+  "tags": [
+   "one day in india in numbers",
+   "india facts and figures",
+   "india daily statistics",
+   "how many babies are born in india every day",
+   "india milk production 2025",
+   "upi transactions per day",
+   "indian railways passengers per day",
+   "india vehicle sales fy26",
+   "india peak power demand record",
+   "india mobile data usage per month",
+   "india in numbers",
+   "india data explained",
+   "india facts 2026",
+   "foodgrain production india record"
+  ]
+ },
+ "sources": [
+  {
+   "name": "Civil Registration System 2023 (RGI) via Drishti IAS (Oct 2025)",
+   "url": "https://www.drishtiias.com/daily-updates/daily-news-analysis/indias-vital-statistics-report-2023"
+  },
+  {
+   "name": "Basic Animal Husbandry Statistics 2025 (DAHD) via Adda247",
+   "url": "https://currentaffairs.adda247.com/__trashed-42"
+  },
+  {
+   "name": "DAHD, BAHS 2025 brochure",
+   "url": "https://dahd.gov.in/sites/default/files/2025-11/BAHS2025Brochure.pdf"
+  },
+  {
+   "name": "News On AIR: India retains top position in milk production (Mar 2026)",
+   "url": "https://www.newsonair.gov.in/india-consistently-retained-its-top-position-globally-in-milk-production-govt/"
+  },
+  {
+   "name": "Foodgrain final estimates 2024-25 via Outlook Business / PTI (Nov 2025)",
+   "url": "https://www.outlookbusiness.com/news/foodgrains-production-rises-8-to-record-35773-mn-ton-in-2024-25-govt-data"
+  },
+  {
+   "name": "News On AIR: rice and wheat final estimates 2024-25 (Nov 2025)",
+   "url": "https://www.newsonair.gov.in/india-records-8-growth-in-foodgrain-output-rice-wheat-production-hits-new-highs"
+  },
+  {
+   "name": "Railway Ministry via ThePrint (Apr 2026)",
+   "url": "https://theprint.in/india/record-1670-million-tonnes-cargo-741-cr-passengers-transported-in-2025-26-railway-ministry/2894368"
+  },
+  {
+   "name": "LatestLY: ~25,000 trains daily (Apr 2026)",
+   "url": "https://www.latestly.com/india/news/indian-railways-carries-1670-mt-freight-runs-25000-trains-daily-in-financial-year-2026-7379596.html"
+  },
+  {
+   "name": "ICRA via Outlook Business: domestic air traffic FY26 (Apr 2026)",
+   "url": "https://www.outlookbusiness.com/industry/indias-domestic-air-passenger-traffic-grows-14-to-16774-lakh-in-fy26-report"
+  },
+  {
+   "name": "FADA FY26 retail data via Autocar Professional (Apr 2026)",
+   "url": "https://www.autocarpro.in/news/india-auto-retail-hits-all-time-high-of-297-crore-units-in-fy26-five-of-six-segments-set-records-131973"
+  },
+  {
+   "name": "NPCI October 2026 data via Entrepreneur India (Nov 2026)",
+   "url": "https://india.entrepreneur.com/business-news/upi-hits-record-25-47-bn-transactions-in-october-daily-value-crosses-inr-1-l-cr"
+  },
+  {
+   "name": "NPCI September 2026 data via Business Today (Oct 2026)",
+   "url": "https://www.businesstoday.in/latest/economy/story/upi-clocks-24-07-bn-transactions-worth-rs29-37-lakh-crore-in-september-as-festive-spending-gathers-pace-558981-2026-10-01"
+  },
+  {
+   "name": "Ministry of Power via National Herald (Sep 2026)",
+   "url": "https://www.nationalheraldindia.com/national/indias-peak-power-demand-doubles-in-a-decade-as-capacity-reaches-552-gw"
+  },
+  {
+   "name": "Ministry of Power via ANI / Asianet (Jan 2026)",
+   "url": "https://newsable.asianetnews.com/business/indias-power-sector-hits-milestones-meets-record-24249-gw-demand-articleshow-yfeh00o"
+  },
+  {
+   "name": "TRAI via ANI / Times of Oman (Oct 2026)",
+   "url": "https://timesofoman.com/article/177687-wireless-data-use-jumps-25-in-fy26-data-revenue-falls-11-per-gb-trai"
+  }
+ ]
+}
