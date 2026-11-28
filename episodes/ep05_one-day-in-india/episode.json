@@ -950,5 +950,46 @@
    "name": "TRAI via ANI / Times of Oman (Oct 2026)",
    "url": "https://timesofoman.com/article/177687-wireless-data-use-jumps-25-in-fy26-data-revenue-falls-11-per-gb-trai"
   }
- ]
+ ],
+ "github": {
+  "issue": 6,
+  "video": "https://github.com/ketu98/claude-indiainnumbers/blob/main/videos/2026-11/2026-11-28_10-53_ep05_one-day-in-india_veda.mp4",
+  "video_file": "2026-11-28_10-53_ep05_one-day-in-india_veda.mp4",
+  "path": "videos/2026-11/2026-11-28_10-53_ep05_one-day-in-india_veda.mp4",
+  "made": "2026-11-28 10:53",
+  "slot": "Weekly",
+  "voice": "VEDA",
+  "kind": "long",
+  "chapters": [
+   [
+    0.0,
+    "Intro"
+   ],
+   [
+    12.6,
+    "48 new Indians a minute"
+   ],
+   [
+    48.9,
+    "Breakfast for a whole country"
+   ],
+   [
+    103.8,
+    "A country that never stays home"
+   ],
+   [
+    157.6,
+    "Money that never sleeps"
+   ],
+   [
+    195.1,
+    "The day the power peaked"
+   ],
+   [
+    251.5,
+    "The phone in every pocket"
+   ]
+  ],
+  "thumb": "videos/2026-11/2026-11-28_10-53_ep05_one-day-in-india_thumb.jpg"
+ }
 }
