@@ -991,5 +991,24 @@
    ]
   ],
   "thumb": "videos/2026-11/2026-11-28_10-53_ep05_one-day-in-india_thumb.jpg"
+ },
+ "upload": {
+  "video_id": "zx31braLhDY",
+  "url": "https://www.youtube.com/watch?v=zx31braLhDY",
+  "video_file": "2026-11-28_10-53_ep05_one-day-in-india_veda.mp4",
+  "slot": "21:30",
+  "slot_mode": "learning",
+  "uploaded": "2026-11-28 10:54",
+  "publish_at": "2026-11-28T21:30+05:30",
+  "title": "One Day in India in Numbers: Births, Milk, Trains, UPI & Power 🇮🇳",
+  "hashtags": [
+   "#IndiaFacts",
+   "#UPI",
+   "#IndianRailways",
+   "#India",
+   "#IndiaInNumbers"
+  ],
+  "error": null,
+  "thumb": true
  }
 }
